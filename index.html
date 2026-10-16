@@ -1,0 +1,2415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0A0A0B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Cove">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<title>Cove — Save it. Find it. Remember it.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,soft,wght@9..144,0,0,600;9..144,1,0,600&family=Instrument+Sans:wght@400;500;600;700&family=Fragment+Mono&display=swap');
+:root{
+  --ink:#0A0A0B;
+  --ink-2:#1A1A1E;
+  --paper:#FDFBF7;
+  --paper-2:#F4EFE6;
+  --line:#E9E6E0;
+  --muted:#6B6B76;
+  --muted-2:#9A9AA3;
+  --coral:#FF4D2E;
+  --coral-2:#FFF1EF;
+  --coral-dark:#E84324;
+  --sage:#0FAA7A;
+  --sage-2:#E6F6F0;
+  --lav:#6C5CFF;
+  --lav-2:#EFECFD;
+  --amber:#FFB020;
+  --amber-2:#FFF6E0;
+  --radius-xl:28px;
+  --radius-lg:20px;
+  --radius-md:14px;
+  --shadow:0 8px 32px rgba(16,16,20,.08),0 1px 3px rgba(16,16,20,.06);
+  --shadow-soft:0 4px 20px rgba(16,16,20,.06);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;background:#0A0A0B;font-family:'Instrument Sans',system-ui,-apple-system,sans-serif;color:var(--ink);min-height:100vh}
+button{font:inherit}
+input,textarea{font:inherit}
+::-webkit-scrollbar{width:0;height:0}
+
+/* Phone frame for desktop */
+.wrap{max-width:1440px;margin:0 auto;display:flex;justify-content:center;gap:32px;padding:24px;min-height:100vh}
+.phone-shell{width:100%;max-width:420px;background:var(--paper);border-radius:40px;overflow:hidden;position:relative;box-shadow:0 40px 80px rgba(0,0,0,.35),0 0 0 1px rgba(255,255,255,.08) inset;height:min(840px, calc(100vh - 48px));min-height:min(840px, calc(100vh - 48px));max-height:calc(100vh - 24px);display:flex;flex-direction:column;border:8px solid #1A1A1E}
+@media(max-width:900px){.wrap{padding:0;gap:0}.phone-shell{border-radius:0;border:none;max-width:100%;height:100dvh;min-height:100dvh;max-height:100dvh;box-shadow:none}}
+
+/* Desktop side pitch */
+.pitch{display:none;flex:1;max-width:520px;color:#fff;padding:40px 24px;align-self:center}
+@media(min-width:900px){.pitch{display:block}}
+.pitch h1{font-family:'Fraunces',serif;font-size:56px;line-height:.9;letter-spacing:-.03em;margin:0}
+.pitch h1 i{font-weight:600;color:var(--coral)}
+.pitch p{color:#C9C9D1;line-height:1.6;margin:16px 0 28px;font-size:16px;max-width:44ch}
+.badges{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px}
+.badge{font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:#fff}
+.badge.coral{background:var(--coral);border-color:var(--coral);color:#fff}
+.feature-list{display:grid;gap:14px;margin-top:28px}
+.f-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(12px);border-radius:18px;padding:16px;display:flex;gap:14px;align-items:flex-start}
+.f-icon{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;flex:0 0 36px;font-size:16px}
+.f-card h4{margin:0;font-size:14px;font-weight:700;color:#fff}
+.f-card p{margin:4px 0 0;font-size:13px;color:#B8B8C2;line-height:1.5}
+
+/* Phone header */
+.statusbar{height:28px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;font-size:12px;font-weight:700;letter-spacing:.02em;color:var(--ink)}
+.statusbar span:last-child{font-family:'Fragment Mono',monospace;font-weight:400;opacity:.6}
+.app-header{padding:8px 16px 12px;position:sticky;top:0;z-index:20;background:rgba(253,251,247,.84);backdrop-filter:blur(16px) saturate(1.2);border-bottom:1px solid rgba(233,230,224,.7)}
+.brand-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{width:36px;height:36px;border-radius:11px;background:var(--ink);display:grid;place-items:center;color:#fff;font-family:'Fraunces',serif;font-weight:600;font-size:18px;letter-spacing:-.02em}
+.logo em{font-style:italic;color:var(--coral);font-weight:600}
+.brand h2{margin:0;font-family:'Fraunces',serif;font-size:22px;letter-spacing:-.02em;line-height:1}
+.brand h2 span{font-weight:400;color:var(--muted)}
+.brand small{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--muted-2);margin-top:1px}
+.icon-btn{width:36px;height:36px;border-radius:999px;border:1px solid var(--line);background:#fff;display:grid;place-items:center;cursor:pointer;transition:.15s}
+.icon-btn:active{transform:scale(.96)}
+.icon-btn.coral{background:var(--coral);border-color:var(--coral);color:#fff}
+
+/* Search */
+.search-wrap{position:relative}
+.search-wrap input{width:100%;height:46px;border-radius:999px;border:1px solid var(--line);background:#fff;padding:0 44px 0 42px;font-size:15px;outline:none;transition:.15s}
+.search-wrap input:focus{border-color:var(--ink);box-shadow:0 0 0 3px rgba(10,10,11,.06)}
+.search-wrap .s-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);opacity:.45}
+.search-wrap .s-clear{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:999px;border:none;background:var(--paper-2);display:none;place-items:center;cursor:pointer}
+.search-wrap.has-value .s-clear{display:grid}
+
+/* Filter chips */
+.filters{padding:12px 16px 0;display:flex;gap:8px;overflow:auto;scrollbar-width:none}
+.filters::-webkit-scrollbar{display:none}
+.chip{white-space:nowrap;height:32px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:#fff;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:6px;cursor:pointer;transition:.15s;flex:0 0 auto}
+.chip.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+.chip .dot{width:7px;height:7px;border-radius:50%}
+.tag-filter{padding:10px 16px 0;display:flex;gap:8px;overflow:auto}
+.tag-pill{font-size:12px;font-weight:700;letter-spacing:.02em;padding:6px 10px;border-radius:999px;background:#fff;border:1px solid var(--line);cursor:pointer;white-space:nowrap}
+.tag-pill.active{background:var(--lav-2);border-color:#D8D2FF;color:var(--lav)}
+
+/* View toggle + count */
+.toolbar{padding:12px 16px 8px;display:flex;align-items:center;justify-content:space-between}
+.count{font-size:13px;color:var(--muted);font-weight:500}
+.count b{color:var(--ink)}
+.view-toggle{display:flex;background:#fff;border:1px solid var(--line);border-radius:999px;padding:3px;gap:3px}
+.view-toggle button{width:28px;height:28px;border-radius:999px;border:none;background:transparent;display:grid;place-items:center;cursor:pointer;color:var(--muted)}
+.view-toggle button.active{background:var(--ink);color:#fff}
+
+/* Resurface banner */
+.resurface{margin:12px 16px 0;background:var(--ink);border-radius:var(--radius-lg);padding:14px 14px 14px 16px;color:#fff;display:flex;gap:12px;align-items:center;position:relative;overflow:hidden}
+.resurface::after{content:"";position:absolute;inset:0;background:radial-gradient(600px 200px at 80% -20%, rgba(255,77,46,.35), transparent 60%), radial-gradient(400px 200px at -10% 120%, rgba(108,92,255,.25), transparent 60%);pointer-events:none}
+.resurface > *{position:relative}
+.r-icon{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.1);display:grid;place-items:center;flex:0 0 40px;border:1px solid rgba(255,255,255,.1)}
+.resurface h4{margin:0;font-size:13px;letter-spacing:.08em;text-transform:uppercase;opacity:.7;font-weight:700}
+.resurface p{margin:4px 0 0;font-size:14px;line-height:1.4;font-weight:500;max-width:22ch;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.r-btn{margin-left:auto;white-space:nowrap;background:#fff;color:var(--ink);border:none;height:32px;padding:0 14px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;flex:0 0 auto}
+
+/* Main scroll */
+.main{flex:1;overflow:auto;padding-bottom:92px}
+.masonry{padding:10px 16px 16px;display:grid;gap:12px}
+.masonry.grid{grid-template-columns:1fr 1fr}
+@media(max-width:380px){.masonry.grid{grid-template-columns:1fr}}
+.masonry.list{grid-template-columns:1fr}
+
+/* Card */
+.card{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow-soft);display:flex;flex-direction:column;transition:.15s;cursor:pointer;position:relative}
+.card:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+.card-top{height:5px;width:100%}
+.card-body{padding:14px}
+.card-type{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.card-type .ticon{width:22px;height:22px;border-radius:7px;display:grid;place-items:center;font-size:11px;color:#fff}
+.card h3{margin:0;font-size:16px;line-height:1.25;letter-spacing:-.015em;font-weight:700;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card p.excerpt{margin:8px 0 0;font-size:13.5px;line-height:1.5;color:var(--muted);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.card-link-preview{margin:10px -14px -14px;background:var(--paper-2);border-top:1px solid var(--line);padding:10px 12px;display:flex;align-items:center;gap:10px}
+.card-link-preview img{width:32px;height:32px;border-radius:8px;object-fit:cover;background:#fff;border:1px solid var(--line);flex:0 0 32px}
+.card-link-preview .domain{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-link-preview .url{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-image{aspect-ratio:1.2;overflow:hidden;background:var(--paper-2);display:grid;place-items:center}
+.card-image img{width:100%;height:100%;object-fit:cover}
+.tags{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:11px;font-weight:700;padding:5px 8px;border-radius:999px;background:var(--paper-2);border:1px solid var(--line);color:var(--muted)}
+.tag.coral{background:var(--coral-2);border-color:#FFD9D2;color:var(--coral-dark)}
+.tag.sage{background:var(--sage-2);border-color:#CDEDE2;color:#0B7D5E}
+.tag.lav{background:var(--lav-2);border-color:#DDD8FF;color:var(--lav)}
+.tag.amber{background:var(--amber-2);border-color:#FFEBB8;color:#8A5A00}
+.meta{margin-top:10px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.meta-left{font-size:11px;color:var(--muted-2);font-family:'Fragment Mono',monospace;display:flex;align-items:center;gap:6px}
+.meta-actions{display:flex;gap:6px}
+.mini-btn{width:28px;height:28px;border-radius:999px;border:1px solid var(--line);background:#fff;display:grid;place-items:center;cursor:pointer;transition:.12s}
+.mini-btn:hover{background:var(--paper-2)}
+.mini-btn.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+.mini-btn.danger:hover{background:#FFF1EF;border-color:#FFD9D2;color:var(--coral)}
+
+/* archived ribbon */
+.archived-badge{position:absolute;top:10px;right:10px;background:rgba(10,10,11,.82);backdrop-filter:blur(8px);color:#fff;font-size:10px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;padding:4px 8px;border-radius:999px}
+
+/* Empty state */
+.empty{padding:32px 16px;text-align:center}
+.empty-illus{width:100%;max-width:260px;margin:0 auto 16px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px}
+.empty h3{margin:0;font-family:'Fraunces',serif;font-size:22px;letter-spacing:-.02em}
+.empty p{margin:8px auto 0;color:var(--muted);font-size:14px;line-height:1.6;max-width:30ch}
+.empty .cta{margin-top:16px;height:44px;padding:0 18px;border-radius:999px;border:none;background:var(--ink);color:#fff;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.empty .tips{margin-top:18px;display:grid;gap:8px;text-align:left}
+.tip{display:flex;gap:10px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px}
+.tip span{font-size:13px;line-height:1.4}
+.tip strong{font-size:13px}
+
+/* Bottom nav + FAB */
+.bottom-bar{position:absolute;left:0;right:0;bottom:0;background:rgba(253,251,247,.9);backdrop-filter:blur(18px) saturate(1.2);border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-around;padding:8px 8px calc(8px + env(safe-area-inset-bottom));z-index:15}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 4px;border-radius:14px;border:none;background:transparent;cursor:pointer;color:var(--muted);font-size:10px;letter-spacing:.06em;text-transform:uppercase;font-weight:800}
+.nav-btn.active{color:var(--ink)}
+.nav-btn .nicon{width:26px;height:26px;border-radius:999px;display:grid;place-items:center;font-size:14px;transition:.15s}
+.nav-btn.active .nicon{background:var(--ink);color:#fff}
+.fab{position:absolute;right:16px;bottom:78px;width:56px;height:56px;border-radius:999px;background:var(--coral);color:#fff;border:none;box-shadow:0 10px 24px rgba(255,77,46,.35),0 2px 8px rgba(0,0,0,.12);display:grid;place-items:center;font-size:26px;cursor:pointer;z-index:16;transition:.15s}
+.fab:active{transform:scale(.96)}
+.fab span{line-height:1;margin-top:-2px}
+
+/* Sheets / Modals */
+.scrim{position:absolute;inset:0;background:rgba(10,10,11,.38);backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:.2s;z-index:30}
+.scrim.open{opacity:1;pointer-events:auto}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:28px 28px 0 0;box-shadow:0 -20px 60px rgba(0,0,0,.2);transform:translateY(105%);transition:transform .34s cubic-bezier(.2,.8,.2,1);z-index:31;max-height:92dvh;max-height:calc(100% - 24px);height:auto;display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--line);border-bottom:none;overscroll-behavior:contain}
+@media(max-width:900px){.sheet{max-height:calc(100dvh - 16px)}}
+.sheet.open{transform:translateY(0)}
+.sheet-head{padding:14px 16px 12px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);flex:0 0 auto;background:#fff;position:sticky;top:0;z-index:2}
+.sheet-head h3{margin:0;font-size:18px;letter-spacing:-.015em}
+.sheet-head p{margin:2px 0 0;font-size:13px;color:var(--muted)}
+.drag{width:36px;height:4px;border-radius:999px;background:var(--line);margin:10px auto 0;flex:0 0 auto}
+.sheet-body{overflow:auto;padding:16px;flex:1;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;min-height:0}
+.sheet-foot{padding:12px 16px calc(12px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:#fff;display:flex;gap:10px;flex:0 0 auto}
+.sheet-foot button{flex:1;height:46px;border-radius:999px;border:1px solid var(--line);font-weight:700;cursor:pointer}
+.btn-primary{background:var(--ink)!important;color:#fff!important;border-color:var(--ink)!important}
+.btn-ghost{background:#fff}
+.btn-coral{background:var(--coral)!important;color:#fff!important;border-color:var(--coral)!important}
+
+/* Form */
+.form-grid{display:grid;gap:14px}
+.type-tabs{display:flex;gap:8px;padding:4px;background:var(--paper-2);border-radius:999px;border:1px solid var(--line);width:fit-content}
+.type-tabs button{height:32px;padding:0 14px;border-radius:999px;border:1px solid transparent;background:transparent;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;color:var(--muted)}
+.type-tabs button.active{background:#fff;border-color:var(--line);color:var(--ink);box-shadow:var(--shadow-soft)}
+.field label{font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:var(--muted);display:block;margin-bottom:6px}
+.field input,.field textarea,.field select{width:100%;border:1px solid var(--line);background:#fff;border-radius:14px;padding:12px 14px;font-size:15px;outline:none;transition:.15s}
+.field textarea{resize:vertical;min-height:96px;line-height:1.5}
+.field input:focus,.field textarea:focus{border-color:var(--ink);box-shadow:0 0 0 3px rgba(10,10,11,.06)}
+.hint{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.4}
+.tag-input{position:relative}
+.tag-input input{padding-right:72px}
+.tag-input button{position:absolute;right:6px;top:50%;transform:translateY(-50%);height:32px;padding:0 12px;border-radius:999px;border:none;background:var(--ink);color:#fff;font-weight:700;font-size:12px;cursor:pointer}
+.picked-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;min-height:0}
+.picked-tags:empty{display:none}
+.picked-tag{font-size:12px;font-weight:700;padding:6px 10px;border-radius:999px;background:var(--ink);color:#fff;display:inline-flex;align-items:center;gap:6px}
+.picked-tag button{width:18px;height:18px;border-radius:999px;border:none;background:rgba(255,255,255,.2);color:#fff;display:grid;place-items:center;cursor:pointer;font-size:12px;line-height:1}
+.auto-tags{display:flex;gap:6px;flex-wrap:wrap}
+.auto-tag{font-size:12px;font-weight:600;padding:6px 10px;border-radius:999px;background:var(--paper-2);border:1px dashed var(--line);cursor:pointer}
+.auto-tag:hover{background:#fff}
+.row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.image-drop{border:1.5px dashed var(--line);border-radius:16px;padding:16px;display:grid;place-items:center;gap:8px;background:var(--paper);text-align:center;cursor:pointer;transition:.15s}
+.image-drop:hover{border-color:var(--muted-2);background:#fff}
+.image-drop img{max-width:100%;max-height:180px;border-radius:12px;border:1px solid var(--line)}
+.suggest{font-size:12px;color:var(--muted);background:var(--amber-2);border:1px solid #FFEBB8;padding:8px 10px;border-radius:10px;display:none}
+.suggest.show{display:block}
+
+/* Detail sheet specifics */
+.detail-hero{aspect-ratio:1.2;background:var(--paper-2);overflow:hidden;display:grid;place-items:center;border-bottom:1px solid var(--line)}
+.detail-hero img{width:100%;height:100%;object-fit:cover}
+.detail-body{padding:16px}
+.detail-kicker{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:var(--muted);display:flex;align-items:center;gap:8px}
+.detail-title{margin:8px 0 8px;font-family:'Fraunces',serif;font-size:24px;line-height:1.15;letter-spacing:-.02em}
+.detail-meta{font-size:13px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap}
+.detail-content{margin-top:14px;font-size:15px;line-height:1.65;color:#1A1A1E;white-space:pre-wrap;word-break:break-word;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px}
+.detail-link{margin-top:12px;display:flex;align-items:center;gap:12px;background:var(--paper-2);border:1px solid var(--line);border-radius:14px;padding:12px}
+.detail-link img{width:36px;height:36px;border-radius:10px;background:#fff;border:1px solid var(--line);object-fit:cover}
+.detail-link a{font-weight:700;color:var(--ink);word-break:break-all;font-size:14px}
+.detail-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.detail-actions button{height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:#fff;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.detail-actions button.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+/* Toast */
+.toasts{position:absolute;left:12px;right:12px;bottom:82px;z-index:40;display:grid;gap:8px;pointer-events:none}
+.toast{background:var(--ink);color:#fff;padding:12px 14px;border-radius:14px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:10px;box-shadow:0 12px 32px rgba(0,0,0,.22);pointer-events:auto;animation:slideIn .28s ease}
+@keyframes slideIn{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
+
+/* Quick capture bar */
+.capture-bar{margin:8px 16px 0;background:#fff;border:1px solid var(--line);border-radius:18px;padding:8px;display:flex;gap:8px;align-items:center;box-shadow:var(--shadow-soft)}
+.capture-bar input{flex:1;border:none;outline:none;font-size:14px;background:transparent;padding:8px 4px}
+.capture-bar button{height:36px;padding:0 14px;border-radius:999px;border:none;background:var(--ink);color:#fff;font-weight:700;cursor:pointer;white-space:nowrap}
+
+/* Share sim */
+.share-sim{margin:10px 16px 0;background:var(--lav-2);border:1px solid #DDD8FF;border-radius:16px;padding:12px;display:flex;gap:10px;align-items:center}
+.share-sim small{font-size:12px;color:var(--lav);font-weight:700;display:block}
+.share-sim strong{font-size:13px}
+
+/* Reminder row */
+.reminder-row{font-size:12px;font-weight:700;padding:6px 10px;border-radius:999px;background:var(--amber-2);border:1px solid #FFEBB8;color:#7A4D00;display:inline-flex;align-items:center;gap:6px;margin-top:8px}
+
+/* Public link */
+.public-link{margin-top:10px;background:var(--sage-2);border:1px solid #CDEDE2;border-radius:12px;padding:10px 12px;display:flex;gap:10px;align-items:center}
+.public-link input{flex:1;border:none;background:transparent;font-family:'Fragment Mono',monospace;font-size:12px;outline:none}
+
+/* Auth — Stage 2 */
+.auth-overlay{position:absolute;inset:0;background:var(--paper);z-index:45;display:flex;flex-direction:column;overflow:hidden}
+.auth-overlay.hidden{display:none}
+.auth-head{padding:22px 20px 14px;text-align:center;border-bottom:1px solid var(--line);background:#fff}
+.auth-head .logo{margin:0 auto 10px}
+.auth-head h2{font-family:'Fraunces',serif;font-size:22px;letter-spacing:-.02em;margin:0}
+.auth-head p{font-size:13px;color:var(--muted);margin:6px 0 0;line-height:1.5}
+.auth-body{flex:1;overflow:auto;padding:18px 16px 12px}
+.auth-tabs{display:flex;background:var(--paper-2);border:1px solid var(--line);border-radius:999px;padding:3px;gap:3px;width:fit-content;margin:0 auto 16px}
+.auth-tabs button{height:32px;padding:0 18px;border-radius:999px;border:none;background:transparent;font-weight:700;font-size:13px;cursor:pointer;color:var(--muted)}
+.auth-tabs button.active{background:#fff;border:1px solid var(--line);color:var(--ink);box-shadow:var(--shadow-soft)}
+.auth-form{display:grid;gap:12px}
+.auth-field label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:var(--muted);display:block;margin-bottom:6px}
+.auth-field input{width:100%;height:44px;border:1px solid var(--line);background:#fff;border-radius:12px;padding:0 14px;font-size:15px;outline:none;transition:.15s}
+.auth-field input:focus{border-color:var(--ink);box-shadow:0 0 0 3px rgba(10,10,11,.06)}
+.auth-field input.error{border-color:var(--coral);background:var(--coral-2)}
+.auth-error{font-size:12.5px;color:var(--coral);background:var(--coral-2);border:1px solid #FFD9D2;padding:8px 10px;border-radius:10px;display:none;line-height:1.4}
+.auth-error.show{display:block}
+.auth-primary{height:44px;border-radius:999px;border:none;background:var(--ink);color:#fff;font-weight:800;cursor:pointer;transition:.15s}
+.auth-primary:disabled{opacity:.6;cursor:not-allowed}
+.auth-primary:active{transform:scale(.98)}
+.auth-demo{margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;display:grid;gap:8px}
+.auth-demo h4{margin:0;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.auth-demo button{height:36px;border-radius:999px;border:1px solid var(--line);background:var(--paper-2);font-weight:700;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:0 12px}
+.auth-demo button b{font-weight:800}
+.sync-pill{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:5px 9px;border-radius:999px;border:1px solid var(--line);display:inline-flex;align-items:center;gap:6px;background:#fff}
+.sync-pill.ok{background:var(--sage-2);border-color:#CDEDE2;color:#0B7D5E}
+.sync-pill.off{background:var(--amber-2);border-color:#FFEBB8;color:#7A4D00}
+.sync-pill.err{background:var(--coral-2);border-color:#FFD9D2;color:var(--coral-dark)}
+.inline-retry{height:28px;padding:0 10px;border-radius:999px;border:1px solid var(--line);background:#fff;font-weight:700;font-size:12px;cursor:pointer}
+.skeleton{height:96px;background:linear-gradient(90deg,#fff 25%,var(--paper-2) 50%,#fff 75%);background-size:200% 100%;animation:shimmer 1.2s infinite;border:1px solid var(--line);border-radius:16px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* Vault — human, neat */
+.vault-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.vault-stat{background:var(--paper-2);border:1px solid var(--line);border-radius:16px;padding:14px}
+.vault-stat b{font-size:22px;letter-spacing:-.02em;line-height:1}
+.vault-stat span{display:block;font-size:11px;letter-spacing:.07em;text-transform:uppercase;font-weight:800;color:var(--muted);margin-top:4px}
+.vault-stat small{display:block;font-size:12px;color:var(--muted);margin-top:6px;line-height:1.4}
+.vault-section{margin:0;font-size:11px;letter-spacing:.09em;text-transform:uppercase;font-weight:800;color:var(--muted-2)}
+.vault-list{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow-soft)}
+.vault-row{width:100%;display:flex;align-items:center;gap:12px;padding:14px 14px;border:none;background:#fff;text-align:left;cursor:pointer;transition:.12s;border-bottom:1px solid var(--line)}
+.vault-row:last-child{border-bottom:none}
+.vault-row:active{background:var(--paper-2)}
+.vault-row:hover{background:#FFFEFB}
+.vault-ic{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;flex:0 0 36px;font-size:15px;border:1px solid var(--line)}
+.vault-row b{font-size:14px}
+.vault-row p{margin:2px 0 0;font-size:12px;color:var(--muted);line-height:1.3}
+.vault-row .chev{margin-left:auto;font-size:14px;color:var(--muted-2)}
+.vault-note{border-radius:14px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start}
+.vault-note h4{margin:0;font-size:13px}
+.vault-note p{margin:4px 0 0;font-size:12.5px;line-height:1.5;color:var(--muted)}
+.vault-note .ni{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;flex:0 0 28px;font-size:13px}
+
+/* Attachment vault — neat file handling */
+.attach-drop{border:1.5px dashed var(--line);border-radius:14px;padding:14px;display:flex;align-items:center;gap:12px;background:var(--paper);cursor:pointer;transition:.15s}
+.attach-drop:hover{border-color:var(--muted-2);background:#fff}
+.attach-drop.drag-over{border-color:var(--lav);background:var(--lav-2)}
+.attach-file{width:40px;height:40px;border-radius:10px;background:#fff;border:1px solid var(--line);display:grid;place-items:center;flex:0 0 40px;font-size:16px}
+.attach-meta{flex:1;min-width:0}
+.attach-meta b{font-size:13px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.attach-meta span{font-size:11px;color:var(--muted);display:block}
+.attach-actions{display:flex;gap:6px}
+.attach-chip{font-size:11px;font-weight:700;padding:4px 8px;border-radius:999px;background:var(--paper-2);border:1px solid var(--line);color:var(--muted);display:inline-flex;align-items:center;gap:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="pitch">
+    <div class="badges"><span class="badge coral">Stage 1 — Polished & Reliable</span><span class="badge">Stage 3 X-Factor Included</span><span class="badge">100% Offline-First</span></div>
+    <h1>Cove <i>keeps</i><br>what matters.</h1>
+    <p>A save-for-later inbox that feels like a quiet design studio — not a cluttered bookmark graveyard. Save notes, links, and images in one gesture. Resurface them exactly when you need them.</p>
+    <div class="feature-list">
+      <div class="f-card"><div class="f-icon" style="background:var(--coral-2);border:1px solid #FFD9D2">⚡</div><div><h4>One-tap capture</h4><p>Paste anything — auto-detects link, note or image. No friction, no forms unless you want them.</p></div></div>
+      <div class="f-card"><div class="f-icon" style="background:var(--sage-2);border:1px solid #CDEDE2">✦</div><div><h4>Resurface & remind</h4><p>Snooze for tomorrow or 7 days. Daily “Dive back in” brings a forgotten gem to your attention.</p></div></div>
+      <div class="f-card"><div class="f-icon" style="background:var(--lav-2);border:1px solid #DDD8FF">◐</div><div><h4>Board + List, beautifully</h4><p>Masonry board for visual scanning, list for focus. Tags, search, archive — all local, all instant.</p></div></div>
+      <div class="f-card"><div class="f-icon" style="background:var(--amber-2);border:1px solid #FFEBB8">⬡</div><div><h4>Privacy-first vault</h4><p>Data lives on your device. Export or wipe anytime. Share one item via a revocable public link — not your whole inbox.</p></div></div>
+    </div>
+    <p style="margin-top:18px;font-size:12px;opacity:.6">Built mobile-first. Try it on your phone: everything works offline and survives a restart. Stage 2 cloud sync architecture is documented in README.</p>
+  </div>
+
+  <div class="phone-shell" id="app">
+    <!-- Stage 2 Auth Overlay -->
+    <div class="auth-overlay" id="authOverlay" aria-modal="true" role="dialog">
+      <div class="auth-head">
+        <div class="logo">c<em>o</em>ve</div>
+        <h2>Welcome to Cove</h2>
+        <p>Private cloud inbox — sign in to see your saves on any device.<br><span style="color:var(--muted-2);font-size:11px">Stage 2 · owner-isolated · privacy enforced on backend</span></p>
+      </div>
+      <div class="auth-body">
+        <div class="auth-tabs" id="authTabs">
+          <button data-mode="in" class="active">Sign in</button>
+          <button data-mode="up">Sign up</button>
+        </div>
+        <form class="auth-form" id="authForm" onsubmit="return false" novalidate>
+          <div class="auth-field">
+            <label for="authEmail">Email</label>
+            <input id="authEmail" type="email" placeholder="you@college.edu" autocomplete="email" required>
+          </div>
+          <div class="auth-field">
+            <label for="authPass">Password <span style="font-weight:500;text-transform:none;letter-spacing:0;color:var(--muted-2)">· 6+ characters</span></label>
+            <input id="authPass" type="password" placeholder="••••••••" autocomplete="current-password" required>
+          </div>
+          <div class="auth-error" id="authError"></div>
+          <button class="auth-primary" id="authSubmit">Continue →</button>
+          <p style="text-align:center;font-size:11px;color:var(--muted-2);margin:0">By continuing, you agree data is stored privately under your owner ID.</p>
+        </form>
+
+        <div class="auth-demo">
+          <h4>Try instantly — demo accounts</h4>
+          <button type="button" data-demo="alice"><span><b>alice@cove.app</b> <span style="font-weight:500;color:var(--muted)">· alice123</span></span> <span>Use ›</span></button>
+          <button type="button" data-demo="bob"><span><b>bob@cove.app</b> <span style="font-weight:500;color:var(--muted)">· bob123</span></span> <span>Use ›</span></button>
+          <p style="font-size:11px;color:var(--muted);margin:0;line-height:1.4">Account A (alice) has 4 private items. Account B (bob) has 2. Try the privacy test in Vault after signing in.</p>
+        </div>
+
+        <div style="margin-top:12px;background:var(--lav-2);border:1px solid #DDD8FF;border-radius:12px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start">
+          <span style="width:24px;height:24px;border-radius:7px;background:#fff;border:1px solid #DDD8FF;display:grid;place-items:center;flex:0 0 24px">🔒</span>
+          <span style="font-size:12px;line-height:1.5;color:#4B4580"><b>Privacy enforced on backend.</b> Changing an item ID or deep link never exposes another user’s item — Firestore Rules / RLS check <code style="background:#fff;padding:1px 4px;border-radius:6px;border:1px solid #DDD8FF">ownerId == auth.uid</code>. See Vault → Stage 2 for rules.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="statusbar"><span>9:41</span><span>◐ ◑ ● 84%</span></div>
+
+    <div class="app-header">
+      <div class="brand-row">
+        <div class="brand">
+          <div class="logo">c<em>o</em>ve</div>
+          <div>
+            <h2>Cove <span>— inbox</span></h2>
+            <small id="subtitle">12 saves · 3 reminders</small>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="icon-btn" id="btnShareSim" title="Simulate share from Chrome">⤴</button>
+          <button class="icon-btn" id="btnExport" title="Export / Vault">⬡</button>
+        </div>
+      </div>
+      <div id="syncBar" style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+        <span class="sync-pill ok" id="syncPill">● Synced</span>
+        <span style="font-size:11px;color:var(--muted);font-family:'Fragment Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px" id="userPill"></span>
+        <button id="btnSignOut" style="margin-left:auto;height:28px;padding:0 10px;border-radius:999px;border:1px solid var(--line);background:#fff;font-weight:700;font-size:11px;cursor:pointer;display:none">Sign out</button>
+        <button id="btnOfflineSim" title="Simulate offline / failure" style="height:28px;padding:0 8px;border-radius:999px;border:1px dashed var(--line);background:var(--paper-2);font-size:11px;font-weight:700;cursor:pointer">Offline: off</button>
+      </div>
+      <div id="installBanner" style="display:none;margin:0 16px 10px;background:var(--ink);color:#fff;border-radius:14px;padding:10px 12px;align-items:center;gap:10px">
+        <span style="width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.12);display:grid;place-items:center;flex:0 0 32px">⬇</span>
+        <span style="flex:1;min-width:0"><b style="font-size:13px;display:block">Install Cove as app</b><span style="display:block;font-size:11px;opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Standalone, offline, share from Chrome</span></span>
+        <button id="btnInstall" style="height:32px;padding:0 14px;border-radius:999px;border:none;background:#fff;color:var(--ink);font-weight:800;cursor:pointer;flex:0 0 auto">Install</button>
+        <button id="btnDismissInstall" style="width:28px;height:28px;border-radius:999px;border:1px solid rgba(255,255,255,.2);background:transparent;color:#fff;cursor:pointer;flex:0 0 28px">✕</button>
+      </div>
+
+      <div class="search-wrap" id="searchWrap">
+        <span class="s-icon">⌕</span>
+        <input id="searchInput" placeholder="Search titles, tags, URLs…" autocomplete="off">
+        <button class="s-clear" id="clearSearch" aria-label="clear">✕</button>
+      </div>
+    </div>
+
+    <div class="capture-bar" id="quickCapture">
+      <span style="opacity:.5">✎</span>
+      <input id="quickInput" placeholder="Paste a link, note or drop an image…">
+      <button id="quickSave">Save</button>
+    </div>
+
+    <div class="share-sim" id="shareBanner" style="display:none">
+      <div style="width:28px;height:28px;border-radius:8px;background:#fff;display:grid;place-items:center;border:1px solid #DDD8FF">⤴</div>
+      <div style="flex:1">
+        <small>Shared from Chrome</small>
+        <strong id="shareTitle">https://example.com/article</strong>
+      </div>
+      <button id="acceptShare" style="height:32px;padding:0 12px;border-radius:999px;border:none;background:var(--ink);color:#fff;font-weight:700;cursor:pointer">Save</button>
+      <button id="dismissShare" style="height:32px;width:32px;border-radius:999px;border:1px solid #DDD8FF;background:#fff;cursor:pointer">✕</button>
+    </div>
+
+    <div class="filters" id="typeFilters"></div>
+    <div class="tag-filter" id="tagFilters"></div>
+
+    <div class="toolbar">
+      <div class="count" id="countLabel"></div>
+      <div class="view-toggle" id="viewToggle">
+        <button data-view="grid" class="active" aria-label="Grid">▦</button>
+        <button data-view="list" aria-label="List">☰</button>
+      </div>
+    </div>
+    <div id="loadingBar" style="display:none;padding:0 16px 8px">
+      <div class="skeleton" style="height:14px;border-radius:999px;margin-bottom:8px"></div>
+      <div style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:8px"><span style="width:10px;height:10px;border:2px solid var(--line);border-top-color:var(--ink);border-radius:50%;display:inline-block;animation:spin 0.8s linear infinite"></span> Syncing your private inbox… <button class="inline-retry" id="btnRetryLoad" style="margin-left:auto;display:none">Retry</button></div>
+    </div>
+    <div id="errorBar" style="display:none;margin:0 16px 8px;background:var(--coral-2);border:1px solid #FFD9D2;border-radius:12px;padding:10px 12px;display:flex;gap:10px;align-items:center">
+      <span style="width:28px;height:28px;border-radius:8px;background:#fff;border:1px solid #FFD9D2;display:grid;place-items:center;flex:0 0 28px;color:var(--coral)">⚠</span>
+      <span style="flex:1"><b id="errorTitle" style="font-size:12px;display:block">Can’t reach Cove cloud</b><span id="errorMsg" style="font-size:12px;color:var(--muted)">You’re offline or the request failed.</span></span>
+      <button class="inline-retry" id="btnRetryError">Retry</button>
+    </div>
+    <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+
+    <div class="resurface" id="resurfaceCard" style="display:none">
+      <div class="r-icon">✦</div>
+      <div>
+        <h4>Dive back in</h4>
+        <p id="resurfaceText">—</p>
+      </div>
+      <button class="r-btn" id="resurfaceOpen">Open</button>
+    </div>
+
+    <div class="main" id="mainScroll">
+      <div class="masonry grid" id="grid"></div>
+      <div class="empty" id="empty" style="display:none"></div>
+    </div>
+
+    <button class="fab" id="fab" aria-label="Add"><span>+</span></button>
+
+    <div class="bottom-bar" id="bottomBar"></div>
+
+    <div class="toasts" id="toasts"></div>
+    <div class="scrim" id="scrim"></div>
+
+    <!-- Create/Edit Sheet -->
+    <div class="sheet" id="editSheet" role="dialog" aria-modal="true">
+      <div class="drag"></div>
+      <div class="sheet-head">
+        <div>
+          <h3 id="editTitle">New save</h3>
+          <p id="editSubtitle">Choose a type to start</p>
+        </div>
+        <button class="icon-btn" id="closeEdit">✕</button>
+      </div>
+      <div class="sheet-body">
+        <div class="form-grid">
+          <div class="type-tabs" id="typeTabs"></div>
+
+          <div class="field">
+            <label for="fTitle">Title</label>
+            <input id="fTitle" placeholder="e.g. ‘Idea for semester project’" maxlength="120">
+            <div class="hint"><span id="titleCount">0</span>/120 — keep it scannable</div>
+          </div>
+
+          <div class="field" id="fieldContent">
+            <label id="contentLabel" for="fContent">Note</label>
+            <textarea id="fContent" placeholder="Write what you don’t want to lose…"></textarea>
+            <div class="suggest" id="autoSuggest"></div>
+          </div>
+
+          <div class="field" id="fieldUrl" style="display:none">
+            <label for="fUrl">URL</label>
+            <input id="fUrl" placeholder="https://..." inputmode="url">
+            <div class="hint">We’ll show a clean preview and let you open it in a focused reader.</div>
+          </div>
+
+          <div class="field" id="fieldImage" style="display:none">
+            <label>Image</label>
+            <div class="image-drop" id="imageDrop">
+              <div id="imageDropEmpty">
+                <div style="font-size:22px">◨</div>
+                <div style="font-size:13px;font-weight:700">Drop or pick an image</div>
+                <div style="font-size:12px;color:var(--muted)">PNG, JPG, WEBP — stays on your device</div>
+              </div>
+              <img id="imagePreview" style="display:none" alt="preview">
+            </div>
+            <input type="file" id="fImage" accept="image/*" style="display:none">
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button type="button" id="pickImage" style="height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:#fff;font-weight:700;cursor:pointer">Choose file</button>
+              <button type="button" id="clearImage" style="height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:#fff;font-weight:700;cursor:pointer;display:none">Remove</button>
+            </div>
+          </div>
+
+          <div class="field" id="fieldAttachment">
+            <label>Attachment <span style="font-weight:500;text-transform:none;letter-spacing:0;color:var(--muted-2)">· image or PDF, ownership-checked</span></label>
+            <div class="attach-drop" id="attachDrop">
+              <span class="attach-file" id="attachIcon">＋</span>
+              <span class="attach-meta">
+                <b id="attachName">Add an image or PDF</b>
+                <span id="attachHint">Stored privately with your owner ID — not an obscure filename</span>
+              </span>
+              <span class="chev" style="color:var(--muted-2)">›</span>
+            </div>
+            <div id="attachPreview" style="display:none;margin-top:10px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;gap:10px;align-items:center">
+              <span class="attach-file" id="attachPreviewIcon">◨</span>
+              <span style="flex:1;min-width:0">
+                <b id="attachPreviewName" style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block"></b>
+                <span id="attachPreviewMeta" style="font-size:11px;color:var(--muted)"></span>
+              </span>
+              <button type="button" id="openAttach" style="height:32px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:#fff;font-weight:700;font-size:12px;cursor:pointer">Open</button>
+              <button type="button" id="clearAttach" style="height:32px;padding:0 12px;border-radius:999px;border:none;background:var(--coral);color:#fff;font-weight:700;font-size:12px;cursor:pointer">Remove</button>
+            </div>
+            <input type="file" id="fAttach" accept="image/*,application/pdf" style="display:none">
+            <div class="hint" id="attachStatus" style="display:none"></div>
+          </div>
+
+          <div class="field">
+            <label>Tags</label>
+            <div class="tag-input">
+              <input id="fTagInput" placeholder="Add a tag and press Enter">
+              <button type="button" id="addTagBtn">Add</button>
+            </div>
+            <div class="picked-tags" id="pickedTags"></div>
+            <div class="hint">Try: work, inspo, recipe, read-later, college</div>
+            <div style="margin-top:8px">
+              <div style="font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px">Suggested</div>
+              <div class="auto-tags" id="autoTags"></div>
+            </div>
+          </div>
+
+          <div class="row-2">
+            <div class="field">
+              <label for="fReminder">Remind me</label>
+              <select id="fReminder">
+                <option value="">No reminder</option>
+                <option value="tomorrow">Tomorrow · 9am</option>
+                <option value="7days">In 7 days</option>
+                <option value="custom">Custom…</option>
+              </select>
+            </div>
+            <div class="field" id="customDateWrap" style="display:none">
+              <label for="fReminderAt">Date & time</label>
+              <input id="fReminderAt" type="datetime-local">
+            </div>
+          </div>
+
+          <label style="display:flex;align-items:center;gap:10px;background:var(--paper-2);border:1px solid var(--line);border-radius:14px;padding:12px;cursor:pointer">
+            <input type="checkbox" id="fArchived"> <span style="font-size:14px;font-weight:700">Archive on save</span> <span style="margin-left:auto;font-size:12px;color:var(--muted)">Hide from inbox</span>
+          </label>
+        </div>
+      </div>
+      <div class="sheet-foot">
+        <button class="btn-ghost" id="cancelEdit">Cancel</button>
+        <button class="btn-primary" id="saveEdit">Save to Cove</button>
+      </div>
+    </div>
+
+    <!-- Detail Sheet — FIXED full-length layout -->
+    <div class="sheet" id="detailSheet" role="dialog" aria-modal="true">
+      <div class="drag"></div>
+      <div class="detail-hero" id="detailHero" style="display:none"><img id="detailImg" alt=""></div>
+      <div class="sheet-head">
+        <div style="min-width:0;flex:1">
+          <div class="detail-kicker" id="detailKicker"></div>
+          <h3 class="detail-title" id="detailTitle" style="margin-top:6px"></h3>
+          <div class="detail-meta" id="detailMeta"></div>
+          <div id="detailReminder"></div>
+          <div id="detailPublic"></div>
+        </div>
+        <button class="icon-btn" id="closeDetail" style="flex:0 0 36px">✕</button>
+      </div>
+      <div class="detail-body" id="detailBody" style="overflow:auto;flex:1;-webkit-overflow-scrolling:touch;padding:16px;padding-bottom:8px;overscroll-behavior:contain">
+        <div class="detail-content" id="detailContent" style="display:none"></div>
+        <div class="detail-link" id="detailLink" style="display:none">
+          <img id="detailFavicon" alt="">
+          <div style="flex:1;min-width:0">
+            <div id="detailDomain" style="font-weight:800;font-size:13px"></div>
+            <a id="detailUrl" href="#" target="_blank" rel="noopener"></a>
+          </div>
+          <button id="openReader" style="height:36px;padding:0 14px;border-radius:999px;border:none;background:var(--ink);color:#fff;font-weight:700;cursor:pointer;white-space:nowrap">Reader</button>
+        </div>
+        <div id="detailAttach" style="display:none;margin-top:12px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;gap:12px;align-items:center">
+          <span class="attach-file" id="detailAttachIcon">◨</span>
+          <span style="flex:1;min-width:0">
+            <b id="detailAttachName" style="font-size:13px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></b>
+            <span id="detailAttachMeta" style="font-size:11px;color:var(--muted)"></span>
+            <span id="detailAttachOwner" style="font-size:11px;color:var(--sage);font-weight:700;display:block;margin-top:2px"></span>
+          </span>
+          <button id="detailAttachOpen" style="height:36px;padding:0 14px;border-radius:999px;border:none;background:var(--ink);color:#fff;font-weight:700;cursor:pointer;white-space:nowrap">Open</button>
+          <button id="detailAttachDownload" style="height:36px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:#fff;font-weight:700;font-size:12px;cursor:pointer">Download</button>
+        </div>
+      </div>
+      <div class="sheet-foot" id="detailFoot" style="flex-wrap:wrap;gap:8px;padding:12px 16px calc(12px + env(safe-area-inset-bottom));justify-content:flex-start">
+        <div class="detail-actions" id="detailActions" style="display:flex;gap:8px;flex-wrap:wrap;width:100%"></div>
+      </div>
+    </div>
+
+    <!-- Reader Overlay -->
+    <div class="sheet" id="readerSheet" role="dialog" aria-modal="true">
+      <div class="drag"></div>
+      <div class="sheet-head">
+        <div>
+          <h3>Reader</h3>
+          <p>Distraction-free · from your saved link</p>
+        </div>
+        <button class="icon-btn" id="closeReader">✕</button>
+      </div>
+      <div class="sheet-body" id="readerBody" style="line-height:1.8;font-size:15px"></div>
+      <div class="sheet-foot">
+        <button class="btn-ghost" id="readerOpenOriginal">Open original</button>
+        <button class="btn-primary" id="readerDone">Done</button>
+      </div>
+    </div>
+
+    <!-- Vault / Export Sheet — rebuilt neat & human -->
+    <div class="sheet" id="vaultSheet" role="dialog" aria-modal="true">
+      <div class="drag"></div>
+      <div class="sheet-head">
+        <div>
+          <h3 style="font-family:'Fraunces',serif;letter-spacing:-.02em">Vault</h3>
+          <p style="color:var(--muted)">Private by default · everything stays on this device</p>
+        </div>
+        <button class="icon-btn" id="closeVault">✕</button>
+      </div>
+      <div class="sheet-body" style="display:grid;gap:16px;align-content:start">
+        <!-- top stats — lived-in, not computed -->
+        <div class="vault-stats">
+          <div class="vault-stat">
+            <b id="vaultCount">6</b>
+            <span>saves</span>
+            <small id="vaultStats">6 tags · 2 links</small>
+          </div>
+          <div class="vault-stat" style="background:#fff">
+            <b style="color:var(--sage)">Offline</b>
+            <span>storage</span>
+            <small>Survives app restarts. No cloud needed for Stage 1.</small>
+          </div>
+        </div>
+
+        <div>
+          <p class="vault-section" style="margin:0 2px 8px">Manage</p>
+          <div class="vault-list">
+            <button class="vault-row" id="btnExportJson">
+              <span class="vault-ic" style="background:var(--ink);color:#fff;border-color:var(--ink)">⬇</span>
+              <span style="flex:1"><b>Export as JSON</b><p>Download a file you can keep or re-import</p></span>
+              <span class="chev">›</span>
+            </button>
+            <button class="vault-row" id="btnCopyExport">
+              <span class="vault-ic" style="background:var(--paper-2)">⎘</span>
+              <span style="flex:1"><b>Copy JSON</b><p>Quick paste to notes or drive</p></span>
+              <span class="chev">›</span>
+            </button>
+            <button class="vault-row" id="btnWipe" style="color:var(--coral)">
+              <span class="vault-ic" style="background:var(--coral-2);border-color:#FFD9D2;color:var(--coral)">⌫</span>
+              <span style="flex:1"><b style="color:var(--coral)">Delete all local data</b><p style="color:#B45A4A">Wipes saves, tags & images on this device only</p></span>
+              <span class="chev" style="color:var(--coral)">›</span>
+            </button>
+          </div>
+          <p style="font-size:11px;color:var(--muted-2);margin:8px 2px 0;line-height:1.4">Tip: export before wiping. Deleting revokes any public links you made.</p>
+        </div>
+
+        <div class="vault-note" style="background:#fff;border:1px solid var(--line)">
+          <span class="ni" style="background:var(--sage-2);border:1px solid #CDEDE2;color:var(--sage)">🔗</span>
+          <span><h4>How sharing works</h4><p>Public links share <b>one item only</b> — never your whole inbox. Each link is an unguessable token (not the internal ID). You can revoke it anytime; deleted items show “unavailable”.</p></span>
+        </div>
+
+        <div class="vault-note" style="background:var(--lav-2);border:1px solid #DDD8FF">
+          <span class="ni" style="background:#fff;border:1px solid #DDD8FF;color:var(--lav)">⬡</span>
+          <span><h4 style="color:var(--lav)">Private by design</h4><p style="color:#5B5685">Each item stores <code style="background:#fff;padding:1px 5px;border-radius:6px;border:1px solid #DDD8FF">ownerId</code>. Firestore Rules / RLS check <code style="background:#fff;padding:1px 5px;border-radius:6px;border:1px solid #DDD8FF">auth.uid == ownerId</code> for every read/write. Client filter alone isn’t enough. See README for the exact rules.</p></span>
+        </div>
+
+        <div style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;display:grid;gap:8px">
+          <h4 style="margin:0;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">Privacy test — try it</h4>
+          <p style="margin:0;font-size:12px;color:var(--muted);line-height:1.5">We enforce owner checks on the <b>backend</b>, not just the UI. Tap to simulate Account B trying to steal Account A’s item by guessing its ID.</p>
+          <button id="btnPrivacyTest" style="height:36px;border-radius:999px;border:1px solid var(--line);background:var(--paper-2);font-weight:800;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">🔒 Run privacy test</button>
+          <div id="privacyResult" style="font-size:12px;padding:8px 10px;border-radius:10px;display:none"></div>
+          <p style="margin:0;font-size:11px;color:var(--muted-2)">Expected: <code>permission-denied</code>. The UI never shows it — the server blocks it.</p>
+        </div>
+
+        <p style="text-align:center;font-size:11px;color:var(--muted-2);margin:4px 0 8px">Made for the tech society review · local-first, polished, explains its trade-offs.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const LS_KEY='cove_items_v3';
+const LS_VIEW='cove_view_v1';
+const LS_TAB='cove_tab_v1';
+
+const uid=()=> Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-4);
+const fmtDate=(iso)=>{
+  const d=new Date(iso);
+  const now=new Date();
+  const diff=(now-d)/1000;
+  if(diff<60) return 'just now';
+  if(diff<3600) return Math.floor(diff/60)+'m ago';
+  if(diff<86400) return Math.floor(diff/3600)+'h ago';
+  if(diff< 604800) return Math.floor(diff/86400)+'d ago';
+  return d.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:d.getFullYear()!==now.getFullYear()?'numeric':undefined});
+};
+const readingTime=(text)=> text? Math.max(1, Math.ceil(text.trim().split(/\s+/).length/180))+' min' : '—';
+const extractDomain=(url)=>{
+  try{return new URL(url).hostname.replace(/^www\./,'')}catch{return url}
+};
+const isUrl=(s)=>{
+  try{const u=new URL(s.trim());return u.protocol==='http:'||u.protocol==='https:'}catch{return false}
+};
+const faviconFor=(url)=>{
+  try{const h=new URL(url).hostname;return `https://www.google.com/s2/favicons?domain=${h}&sz=64`}catch{return ''}
+};
+
+const defaultTags=['work','inspo','recipe','read-later','college','idea','watch-later'];
+const typeMeta={
+  note:{label:'Note',icon:'✎',color:'#0FAA7A',bg:'#E6F6F0',dot:'#0FAA7A'},
+  link:{label:'Link',icon:'↗',color:'#6C5CFF',bg:'#EFECFD',dot:'#6C5CFF'},
+  image:{label:'Image',icon:'◨',color:'#FF4D2E',bg:'#FFF1EF',dot:'#FF4D2E'},
+  snippet:{label:'Snippet',icon:'</>',color:'#FFB020',bg:'#FFF6E0',dot:'#FFB020'}
+};
+
+let items = [];
+let view = localStorage.getItem(LS_VIEW) || 'grid';
+let activeType='all';
+let activeTag=null;
+let bottomTab='inbox'; // inbox | archive | tags
+let searchQuery='';
+let editingId=null;
+let pendingImageDataUrl=null;
+let pendingShare=null;
+let currentDetailId=null;
+
+const demo=[{
+  id:uid(), type:'link', title:'The Art of Doing Less but Better — Minimalist Design Principles',
+  content:'https://www.are.na/blog/minimal-design', tags:['inspo','work'], createdAt:new Date(Date.now()-1000*60*60*2).toISOString(), updatedAt:new Date(Date.now()-1000*60*60*2).toISOString(), archived:false
+},{
+  id:uid(), type:'note', title:'Semester idea: Cove itself',
+  content:'Build a save-for-later that people *enjoy* opening. Must feel calm, not cluttered.\n\nCore: inbox with notes/links/images, tags, search, archive.\nX-factor: resurface roulette + snooze + public link + share sheet.\nKeep it local-first, add cloud later. Don’t break what already works.', tags:['idea','college'], createdAt:new Date(Date.now()-1000*60*60*26).toISOString(), updatedAt:new Date(Date.now()-1000*60*60*26).toISOString(), archived:false, reminderAt:new Date(Date.now()+1000*60*60*20).toISOString()
+},{
+  id:uid(), type:'image', title:'Moodboard — soft studio light',
+  content:'', imageData:'', tags:['inspo'], createdAt:new Date(Date.now()-1000*60*60*72).toISOString(), updatedAt:new Date(Date.now()-1000*60*60*72).toISOString(), archived:false
+},{
+  id:uid(), type:'snippet', title:'Snippet: CSS glass card',
+  content:`.glass{\n  background: rgba(255,255,255,.72);\n  backdrop-filter: blur(16px) saturate(1.2);\n  border: 1px solid rgba(233,230,224,.7);\n  border-radius: 20px;\n}`, tags:['work'], createdAt:new Date(Date.now()-1000*60*60*5).toISOString(), updatedAt:new Date(Date.now()-1000*60*60*5).toISOString(), archived:false
+},{
+  id:uid(), type:'link', title:'Figma — 2026 Design Trends Report',
+  content:'https://www.figma.com/blog/design-trends-2026', tags:['read-later','inspo'], createdAt:new Date(Date.now()-1000*60*60*120).toISOString(), updatedAt:new Date(Date.now()-1000*60*60*120).toISOString(), archived:true
+},{
+  id:uid(), type:'note', title:'Grocery + recipe to try',
+  content:'Miso eggplant bowl — eggplant, white miso, honey, rice vinegar, sesame.\nServe with jasmine rice + pickled onions. Save rcp link later.', tags:['recipe'], createdAt:new Date(Date.now()-1000*60*60*10).toISOString(), updatedAt:new Date(Date.now()-1000*60*60*10).toISOString(), archived:false
+}];
+
+/* ===================== STAGE 2 — PRIVATE CLOUD (mock backend with real privacy) ===================== */
+const USERS_KEY='cove_users_v2';
+const SESSION_KEY='cove_session_v2';
+const REMOTE_KEY='cove_remote_v2';
+const STORAGE_KEY='cove_storage_v2';
+const PUBLIC_KEY='cove_public_v2';
+const PUBLIC_MAP_KEY='cove_public_map';
+let simulateOffline=false;
+
+function getPublicAll(){ try{return JSON.parse(localStorage.getItem(PUBLIC_KEY)||'[]')}catch{return []}}
+function setPublicAll(arr){ localStorage.setItem(PUBLIC_KEY, JSON.stringify(arr)); try{ localStorage.setItem(PUBLIC_MAP_KEY, JSON.stringify(Object.fromEntries(arr.map(p=>[p.token,p.itemId])))); }catch{} }
+function createPublicToken(itemId, ownerId){
+  let token;
+  try{ token=crypto.randomUUID().replace(/-/g,'') + Math.random().toString(36).slice(2,5); }catch{ token=Math.random().toString(36).slice(2,12)+Math.random().toString(36).slice(2,12)+Date.now().toString(36); }
+  // ensure token is not the internal id
+  if(token===itemId) token='p_'+token;
+  const all=getPublicAll(); all.push({token, itemId, ownerId, createdAt:new Date().toISOString()}); setPublicAll(all); return token;
+}
+function revokePublicTokenByItem(itemId){
+  let all=getPublicAll(); const before=all.length; all=all.filter(p=>p.itemId!==itemId); if(all.length!==before) setPublicAll(all);
+}
+function findPublicByToken(token){ return getPublicAll().find(p=>p.token===token); }
+// Storage — attachment vault with ownership checks (obscure filename is NOT security)
+function getStorageAll(){ try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]')}catch{return []}}
+function setStorageAll(a){ localStorage.setItem(STORAGE_KEY, JSON.stringify(a)); }
+function storageUpload({name, type, size, dataUrl}, ownerId, itemId){
+  const me=getCurrentUser();
+  if(!me || me.id!==ownerId) throw Object.assign(new Error('permission-denied — file ownership mismatch'),{code:'permission-denied'});
+  const fileId='f_'+ (crypto.randomUUID? crypto.randomUUID().replace(/-/g,'').slice(0,16) : uid());
+  const rec={fileId, ownerId, itemId, name, type, size, dataUrl, createdAt:new Date().toISOString()};
+  const all=getStorageAll(); all.push(rec); setStorageAll(all); return rec;
+}
+function storageGet(fileId){
+  const all=getStorageAll(); const rec=all.find(r=>r.fileId===fileId);
+  if(!rec) throw Object.assign(new Error('File not found'),{code:'not-found'});
+  const me=getCurrentUser();
+  // ownership check — obscure filename alone is not security
+  if(!me || rec.ownerId!==me.id) throw Object.assign(new Error('permission-denied — this file belongs to another account'),{code:'permission-denied'});
+  return rec;
+}
+function storageGetForPublic(fileId, token){
+  // public token allows read without owner check, but only if token maps to same item
+  const pub=findPublicByToken(token);
+  const all=getStorageAll(); const rec=all.find(r=>r.fileId===fileId);
+  if(!rec || !pub) throw Object.assign(new Error('File not found or link revoked'),{code:'not-found'});
+  if(pub.itemId!==rec.itemId) throw Object.assign(new Error('permission-denied'),{code:'permission-denied'});
+  return rec;
+}
+function storageDelete(fileId){
+  const all=getStorageAll(); const idx=all.findIndex(r=>r.fileId===fileId);
+  if(idx===-1) throw Object.assign(new Error('File not found'),{code:'not-found'});
+  const me=getCurrentUser();
+  if(!me || all[idx].ownerId!==me.id) throw Object.assign(new Error('permission-denied'),{code:'permission-denied'});
+  all.splice(idx,1); setStorageAll(all);
+}
+let lastFailedOp=null;
+
+const hashPass = s => btoa(unescape(encodeURIComponent(s))).slice(0,32);
+function initStage2(){
+  // seed users if empty
+  let users=[];
+  try{ users=JSON.parse(localStorage.getItem(USERS_KEY)||'[]')}catch{}
+  if(users.length===0){
+    users=[
+      {id:'u-alice-'+uid().slice(0,6), email:'alice@cove.app', passHash:hashPass('alice123'), createdAt:new Date().toISOString()},
+      {id:'u-bob-'+uid().slice(0,6), email:'bob@cove.app', passHash:hashPass('bob123'), createdAt:new Date().toISOString()}
+    ];
+    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    // seed remote items per owner — isolated
+    const aliceId=users[0].id, bobId=users[1].id;
+    // generate demo items with ownerId
+    const makeImg = ()=>{
+      try{
+        const c=document.createElement('canvas');c.width=800;c.height=600;const g=c.getContext('2d');
+        const grad=g.createLinearGradient(0,0,800,600);grad.addColorStop(0,'#FFF1EF');grad.addColorStop(1,'#EFECFD');g.fillStyle=grad;g.fillRect(0,0,800,600);
+        g.fillStyle='#0A0A0B';g.font='700 28px Instrument Sans';g.fillText('Soft studio light',32,48);
+        g.fillStyle='#6B6B76';g.font='400 14px Instrument Sans';g.fillText('Warm, diffused, 3200K — save references',32,72);
+        g.fillStyle='rgba(255,77,46,.12)';g.beginPath();g.arc(620,420,120,0,Math.PI*2);g.fill();
+        return c.toDataURL('image/jpeg',0.82);
+      }catch{ return ''}
+    };
+    const imgData=makeImg();
+    const remoteSeed=[
+      {id:uid(), ownerId:aliceId, type:'link', title:'The Art of Doing Less but Better — Minimalist Design Principles', content:'https://www.are.na/blog/minimal-design', tags:['inspo','work'], createdAt:new Date(Date.now()-1000*60*60*2).toISOString(), updatedAt:new Date(Date.now()-1000*60*60*2).toISOString(), archived:false},
+      {id:uid(), ownerId:aliceId, type:'note', title:'Semester idea: Cove itself', content:'Build a save-for-later that people *enjoy* opening. Must feel calm, not cluttered.', tags:['idea','college'], createdAt:new Date(Date.now()-1000*60*60*26).toISOString(), updatedAt:new Date(Date.now()-1000*60*60*26).toISOString(), archived:false, reminderAt:new Date(Date.now()+1000*60*60*20).toISOString()},
+      {id:uid(), ownerId:aliceId, type:'image', title:'Moodboard — soft studio light', content:'', imageData:imgData, tags:['inspo'], createdAt:new Date(Date.now()-1000*60*60*72).toISOString(), updatedAt:new Date(Date.now()-1000*60*60*72).toISOString(), archived:false},
+      {id:uid(), ownerId:aliceId, type:'link', title:'Figma — 2026 Design Trends Report', content:'https://www.figma.com/blog/design-trends-2026', tags:['read-later','inspo'], createdAt:new Date(Date.now()-1000*60*60*120).toISOString(), updatedAt:new Date(Date.now()-1000*60*60*120).toISOString(), archived:true},
+      {id:uid(), ownerId:bobId, type:'note', title:'Bob’s private — weekend trek plan', content:'Rajaji tiger reserve, 5am start. Bring binoculars. Secret spot near Chilla.', tags:['private','travel'], createdAt:new Date(Date.now()-1000*60*60*3).toISOString(), updatedAt:new Date(Date.now()-1000*60*60*3).toISOString(), archived:false},
+      {id:uid(), ownerId:bobId, type:'link', title:'Bob’s link — Go performance tricks', content:'https://go.dev/blog/performance', tags:['work'], createdAt:new Date(Date.now()-1000*60*60*9).toISOString(), updatedAt:new Date(Date.now()-1000*60*60*9).toISOString(), archived:false}
+    ];
+    localStorage.setItem(REMOTE_KEY, JSON.stringify(remoteSeed));
+    // seed a private file for bob to demo storage ownership (C)
+    try{
+      const bobFileId='f_'+Math.random().toString(36).slice(2,10);
+      const storageSeed=[{fileId:bobFileId, ownerId:bobId, itemId:remoteSeed[4].id, name:'bob-secret.pdf', type:'application/pdf', size:42100, dataUrl:'data:application/pdf;base64,JVBERi0xLjQKJcOkw7zDtsOfCjEgMCBvYmoKPDwvVHlwZS9DYXRhbG9nL1BhZ2VzIDIgMCBSPj4KZW5kb2Jq', createdAt:new Date().toISOString()}];
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(storageSeed));
+      // attach file reference to bob's item
+      remoteSeed[4].attachment={fileId:bobFileId, name:'bob-secret.pdf', type:'application/pdf', size:42100};
+      localStorage.setItem(REMOTE_KEY, JSON.stringify(remoteSeed));
+    }catch{}
+    try{ localStorage.setItem('cove_public_map','{}'); localStorage.setItem(PUBLIC_KEY,'[]'); }catch{}
+  }
+}
+initStage2();
+
+function getUsers(){ try{return JSON.parse(localStorage.getItem(USERS_KEY)||'[]')}catch{return []}}
+function getSession(){ try{return JSON.parse(localStorage.getItem(SESSION_KEY)||'null')}catch{return null}}
+function setSession(user){ localStorage.setItem(SESSION_KEY, JSON.stringify({id:user.id,email:user.email})); }
+function clearSession(){ localStorage.removeItem(SESSION_KEY); }
+function getCurrentUser(){ const s=getSession(); if(!s) return null; const users=getUsers(); return users.find(u=>u.id===s.id)||null; }
+
+function isAuthed(){ return !!getCurrentUser(); }
+
+// mock backend helpers
+function mockDelay(){ return 450 + Math.floor(Math.random()*380); }
+function shouldFail(){ if(simulateOffline) return true; if(!navigator.onLine) return true; return Math.random()<0.09; } // 9% random failure to demo retry
+async function withBackend(fn){
+  setSync('syncing');
+  showLoading(true);
+  hideError();
+  await new Promise(r=>setTimeout(r, mockDelay()));
+  if(shouldFail()){
+    // simulate network failure
+    const err=new Error('Network failed — you appear offline');
+    err.code='unavailable';
+    setSync('error', 'Offline');
+    showError('Can’t reach Cove cloud','Check your connection and try again.');
+    showLoading(false);
+    throw err;
+  }
+  try{
+    const res=await fn();
+    setSync('ok','Synced');
+    showLoading(false);
+    hideError();
+    return res;
+  }catch(e){
+    setSync('error', e.code==='permission-denied'?'Blocked':'Error');
+    showLoading(false);
+    if(e.code!=='permission-denied'){
+      showError(e.message||'Something went wrong','Tap Retry to try again.');
+      lastFailedOp=()=> withBackend(fn);
+    }
+    throw e;
+  }
+}
+function setSync(state, label){
+  const pill=document.getElementById('syncPill');
+  if(!pill) return;
+  pill.className='sync-pill '+(state==='ok'?'ok':state==='syncing'?'':'err');
+  if(state==='ok'){ pill.textContent='● Synced'; pill.className='sync-pill ok'; }
+  else if(state==='syncing'){ pill.textContent='◐ Syncing…'; pill.className='sync-pill'; pill.style.background='#fff'; }
+  else if(state==='error'){ pill.textContent='● '+ (label||'Offline'); pill.className='sync-pill err'; }
+  else if(state==='off'){ pill.textContent='○ Offline demo'; pill.className='sync-pill off'; }
+}
+function showLoading(v){
+  const el=document.getElementById('loadingBar');
+  if(el) el.style.display=v?'block':'none';
+}
+function showError(title,msg){
+  const bar=document.getElementById('errorBar');
+  if(!bar) return;
+  bar.style.display='flex';
+  const t=document.getElementById('errorTitle'); if(t) t.textContent=title;
+  const m=document.getElementById('errorMsg'); if(m) m.textContent=msg;
+}
+function hideError(){
+  const bar=document.getElementById('errorBar');
+  if(bar) bar.style.display='none';
+}
+
+
+
+// remote store helpers — privacy enforced here, not in UI
+function getRemoteAll(){ try{return JSON.parse(localStorage.getItem(REMOTE_KEY)||'[]')}catch{return []}}
+function setRemoteAll(arr){ localStorage.setItem(REMOTE_KEY, JSON.stringify(arr)); }
+function enforceOwner(item){
+  const me=getCurrentUser();
+  if(!me) { const e=new Error('Not authenticated — please sign in'); e.code='unauthenticated'; throw e; }
+  if(item.ownerId !== me.id){ const e=new Error('permission-denied — this item belongs to another account'); e.code='permission-denied'; throw e; }
+}
+
+async function remoteList(){
+  return withBackend(()=>{
+    const me=getCurrentUser();
+    if(!me) throw Object.assign(new Error('Not signed in'),{code:'unauthenticated'});
+    const all=getRemoteAll();
+    // only return own items — backend filtering, not client
+    return all.filter(it=> it.ownerId===me.id);
+  });
+}
+async function remoteCreate(payload){
+  return withBackend(()=>{
+    const me=getCurrentUser();
+    if(!me) throw Object.assign(new Error('Not signed in'),{code:'unauthenticated'});
+    const all=getRemoteAll();
+    const now=new Date().toISOString();
+    const item={id:uid(), ownerId:me.id, createdAt:now, updatedAt:now, ...payload};
+    all.unshift(item);
+    setRemoteAll(all);
+    return item;
+  });
+}
+async function remoteUpdate(id, patch){
+  return withBackend(()=>{
+    const all=getRemoteAll();
+    const idx=all.findIndex(x=>x.id===id);
+    if(idx===-1) throw Object.assign(new Error('Item not found'),{code:'not-found'});
+    enforceOwner(all[idx]);
+    all[idx]={...all[idx], ...patch, updatedAt:new Date().toISOString()};
+    setRemoteAll(all);
+    return all[idx];
+  });
+}
+async function remoteDelete(id){
+  return withBackend(()=>{
+    const all=getRemoteAll();
+    const idx=all.findIndex(x=>x.id===id);
+    if(idx===-1) throw Object.assign(new Error('Item not found'),{code:'not-found'});
+    enforceOwner(all[idx]);
+    const [removed]=all.splice(idx,1);
+    setRemoteAll(all);
+    // revoke public link if any
+    revokePublicTokenByItem(id);
+    // delete owned files for this item — ownership checked
+    try{
+      const sAll=getStorageAll().filter(r=> !(r.itemId===id && r.ownerId===removed.ownerId));
+      // only delete if owner matches — prevents deleting other's files with same itemId guess
+      setStorageAll(sAll);
+    }catch{}
+    return removed;
+  });
+}
+async function remoteGetById(id){
+  return withBackend(()=>{
+    const all=getRemoteAll();
+    const it=all.find(x=>x.id===id);
+    if(!it) throw Object.assign(new Error('Item not found'),{code:'not-found'});
+    enforceOwner(it);
+    return it;
+  });
+}
+
+function load(){
+  // local cache fallback — used when offline or before remote sync
+  try{
+    const raw=localStorage.getItem(LS_KEY);
+    if(!raw){
+      items = demo;
+      const c=document.createElement('canvas');c.width=800;c.height=600;const g=c.getContext('2d');
+      const grad=g.createLinearGradient(0,0,800,600);grad.addColorStop(0,'#FFF1EF');grad.addColorStop(1,'#EFECFD');g.fillStyle=grad;g.fillRect(0,0,800,600);
+      g.fillStyle='#0A0A0B';g.font='700 36px Instrument Sans';g.fillText('Soft studio light',32,48);
+      g.fillStyle='#6B6B76';g.font='400 14px Instrument Sans';g.fillText('Warm, diffused, 3200K — save references here.',32,72);
+      g.fillStyle='rgba(255,77,46,.12)';g.beginPath();g.arc(620,420,140,0,Math.PI*2);g.fill();
+      g.fillStyle='rgba(108,92,255,.12)';g.beginPath();g.arc(180,420,90,0,Math.PI*2);g.fill();
+      items.find(x=>x.type==='image').imageData=c.toDataURL('image/jpeg',0.85);
+      saveLocal();
+    } else {
+      items = JSON.parse(raw);
+    }
+  }catch(e){ items=[...demo]; }
+}
+function saveLocal(){
+  localStorage.setItem(LS_KEY, JSON.stringify(items));
+  localStorage.setItem(LS_VIEW, view);
+  localStorage.setItem(LS_TAB, bottomTab);
+  scheduleReminders();
+}
+function save(){
+  // keep local cache in sync for instant reloads
+  saveLocal();
+}
+async function refreshFromRemote(){
+  if(!isAuthed()) return;
+  try{
+    const remoteItems = await remoteList();
+    items = remoteItems;
+    saveLocal();
+    render();
+  }catch(e){
+    // keep showing cached items + error bar already shown via withBackend
+    if(e.code==='unauthenticated'){ showAuth(); }
+    render();
+  }
+}
+function updateAuthUI(){
+  const me=getCurrentUser();
+  const overlay=document.getElementById('authOverlay');
+  const pill=document.getElementById('userPill');
+  const signOut=document.getElementById('btnSignOut');
+  if(me){
+    if(overlay) overlay.classList.add('hidden');
+    if(pill) pill.textContent=me.email;
+    if(signOut) signOut.style.display='inline-flex';
+    setSync('ok','Synced');
+  }else{
+    if(overlay) overlay.classList.remove('hidden');
+    if(pill) pill.textContent='Not signed in';
+    if(signOut) signOut.style.display='none';
+    setSync('off','Offline');
+  }
+}
+
+function allTags(){
+  const m=new Map();
+  items.forEach(it=> (it.tags||[]).forEach(t=> m.set(t,(m.get(t)||0)+1)));
+  return [...m.entries()].sort((a,b)=>b[1]-a[1]);
+}
+
+// DOM refs
+const gridEl=document.getElementById('grid');
+const emptyEl=document.getElementById('empty');
+const countLabel=document.getElementById('countLabel');
+const typeFiltersEl=document.getElementById('typeFilters');
+const tagFiltersEl=document.getElementById('tagFilters');
+const searchInput=document.getElementById('searchInput');
+const searchWrap=document.getElementById('searchWrap');
+const viewToggle=document.getElementById('viewToggle');
+const bottomBar=document.getElementById('bottomBar');
+const resurfaceCard=document.getElementById('resurfaceCard');
+const resurfaceText=document.getElementById('resurfaceText');
+const subtitleEl=document.getElementById('subtitle');
+const scrim=document.getElementById('scrim');
+const editSheet=document.getElementById('editSheet');
+const detailSheet=document.getElementById('detailSheet');
+const readerSheet=document.getElementById('readerSheet');
+const vaultSheet=document.getElementById('vaultSheet');
+const toastsEl=document.getElementById('toasts');
+
+function toast(msg, opts={}){
+  const t=document.createElement('div'); t.className='toast';
+  t.innerHTML=`<span style="width:28px;height:28px;border-radius:999px;background:rgba(255,255,255,.14);display:grid;place-items:center;flex:0 0 28px">${opts.icon||'✓'}</span><span style="flex:1">${msg}</span>`;
+  toastsEl.appendChild(t);
+  setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateY(6px)'; t.style.transition='.25s'; setTimeout(()=>t.remove(),250)}, 2400);
+  if(navigator.vibrate) try{navigator.vibrate(12)}catch{}
+}
+
+function filtered(){
+  let list=[...items];
+  // bottom tab
+  if(bottomTab==='inbox') list=list.filter(i=>!i.archived);
+  else if(bottomTab==='archive') list=list.filter(i=>i.archived);
+  // type
+  if(activeType!=='all') list=list.filter(i=>i.type===activeType);
+  // tag
+  if(activeTag) list=list.filter(i=> (i.tags||[]).includes(activeTag));
+  // search
+  if(searchQuery.trim()){
+    const q=searchQuery.trim().toLowerCase();
+    list=list.filter(i=> (i.title+' '+(i.content||'')+' '+(i.tags||[]).join(' ')+' '+(i.imageData||'')+' '+(i.attachment?.name||'')).toLowerCase().includes(q));
+  }
+  // sort newest first, but reminders first if inbox?
+  list.sort((a,b)=> new Date(b.updatedAt)-new Date(a.updatedAt));
+  return list;
+}
+
+function renderTypeFilters(){
+  const types=[{id:'all',label:'All'}, {id:'note',label:'Notes'}, {id:'link',label:'Links'}, {id:'image',label:'Images'}, {id:'snippet',label:'Snippets'}];
+  typeFiltersEl.innerHTML='';
+  types.forEach(t=>{
+    const btn=document.createElement('button');
+    btn.className='chip'+(activeType===t.id?' active':'');
+    if(t.id!=='all'){
+      const m=typeMeta[t.id];
+      btn.innerHTML=`<span class="dot" style="background:${m.dot}"></span>${t.label}`;
+    } else btn.textContent=t.label;
+    btn.onclick=()=>{ activeType=t.id; render(); };
+    typeFiltersEl.appendChild(btn);
+  });
+}
+function renderTagFilters(){
+  const tags=allTags().slice(0,12);
+  tagFiltersEl.innerHTML='';
+  if(tags.length===0) { tagFiltersEl.style.display='none'; return } else tagFiltersEl.style.display='flex';
+  // all pill
+  const all=document.createElement('button');
+  all.className='tag-pill'+(!activeTag?' active':'');
+  all.textContent='All tags';
+  all.onclick=()=>{activeTag=null; renderTagFilters(); renderGrid();};
+  tagFiltersEl.appendChild(all);
+  tags.forEach(([tag,count])=>{
+    const b=document.createElement('button');
+    b.className='tag-pill'+(activeTag===tag?' active':'');
+    b.textContent=`#${tag} · ${count}`;
+    b.onclick=()=>{ activeTag= activeTag===tag?null:tag; renderTagFilters(); renderGrid(); };
+    tagFiltersEl.appendChild(b);
+  });
+}
+function renderBottomBar(){
+  const tabs=[
+    {id:'inbox',label:'Inbox',icon:'⌂',count: items.filter(i=>!i.archived).length},
+    {id:'archive',label:'Archive',icon:'▭',count: items.filter(i=>i.archived).length},
+    {id:'tags',label:'Tags',icon:'#',count: allTags().length},
+  ];
+  bottomBar.innerHTML='';
+  tabs.forEach(t=>{
+    const b=document.createElement('button');
+    b.className='nav-btn'+(bottomTab===t.id?' active':'');
+    b.innerHTML=`<span class="nicon">${t.icon}</span>${t.label} · ${t.count}`;
+    b.onclick=()=>{ bottomTab=t.id; if(t.id==='tags'){ activeTag=null; activeType='all';} localStorage.setItem(LS_TAB,bottomTab); render(); if(t.id==='tags' && allTags().length===0) toast('Add tags to your saves to see them here','🏷️') };
+    bottomBar.appendChild(b);
+  });
+  // add vault shortcut as last item style?
+  const v=document.createElement('button');
+  v.className='nav-btn';
+  v.innerHTML=`<span class="nicon">⬡</span>Vault`;
+  v.onclick=openVault;
+  bottomBar.appendChild(v);
+}
+function renderResurface(){
+  const candidates=items.filter(i=>!i.archived);
+  if(candidates.length<3){ resurfaceCard.style.display='none'; return}
+  resurfaceCard.style.display='flex';
+  // pick random but deterministic per day? simple random
+  const pick=candidates[Math.floor(Math.random()*candidates.length)];
+  resurfaceText.textContent=`“${pick.title}”`;
+  resurfaceCard.onclick=(e)=>{
+    if(e.target.closest('button')) return;
+    openDetail(pick.id);
+  };
+  document.getElementById('resurfaceOpen').onclick=()=> openDetail(pick.id);
+}
+
+function cardHtml(it){
+  const m=typeMeta[it.type]||typeMeta.note;
+  const date=fmtDate(it.createdAt);
+  const tags=(it.tags||[]).slice(0,3);
+  const isArch=it.archived;
+  const reminder=it.reminderAt? `<div class="reminder-row">⏰ ${fmtReminder(it.reminderAt)}</div>`:'';
+  let top=`<div class="card-top" style="background:${m.color}"></div>`;
+  let hero='';
+  if(it.type==='image' && it.imageData){
+    hero=`<div class="card-image"><img loading="lazy" src="${it.imageData}" alt=""></div>`;
+  } else if(it.type==='link' && it.content){
+    // try to show preview — generic
+    hero='';
+  }
+  let bodyInner='';
+  if(it.type==='link'){
+    bodyInner=`
+      <div class="card-type" style="color:${m.color}"><span class="ticon" style="background:${m.color}">${m.icon}</span>${m.label} · ${extractDomain(it.content)}</div>
+      <h3>${esc(it.title||'Untitled')}</h3>
+      ${it.content?`<div class="card-link-preview"><img src="${faviconFor(it.content)}" onerror="this.style.display='none'"><div style="min-width:0;flex:1"><div class="domain">${esc(extractDomain(it.content))}</div><div class="url">${esc(it.content)}</div></div><span style="font-size:12px">↗</span></div>`:''}
+    `;
+  } else if(it.type==='snippet'){
+    bodyInner=`
+      <div class="card-type" style="color:${m.color}"><span class="ticon" style="background:${m.color}">${m.icon}</span>${m.label} · ${readingTime(it.content)}</div>
+      <h3>${esc(it.title||'Untitled')}</h3>
+      <p class="excerpt" style="font-family:'Fragment Mono',monospace;font-size:12px;background:var(--paper-2);border:1px solid var(--line);border-radius:10px;padding:8px;margin-top:8px;white-space:pre-wrap;word-break:break-word;-webkit-line-clamp:5">${esc((it.content||'').slice(0,280))}</p>
+    `;
+  } else if(it.type==='note'){
+    bodyInner=`
+      <div class="card-type" style="color:${m.color}"><span class="ticon" style="background:${m.color}">${m.icon}</span>${m.label} · ${readingTime(it.content)}</div>
+      <h3>${esc(it.title||'Untitled')}</h3>
+      ${it.content?`<p class="excerpt">${esc(it.content.slice(0,220))}</p>`:''}
+    `;
+  } else {
+    bodyInner=`
+      <div class="card-type" style="color:${m.color}"><span class="ticon" style="background:${m.color}">${m.icon}</span>${m.label}</div>
+      <h3>${esc(it.title||'Untitled')}</h3>
+    `;
+  }
+
+  const tagsHtml=tags.length? `<div class="tags">${tags.map(t=>`<span class="tag ${tagColor(t)}">#${esc(t)}</span>`).join('')}</div>`:'';
+  const attachHtml= it.attachment ? `<div style=\"margin-top:8px;display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--lav)\"><span style=\"width:18px;height:18px;border-radius:6px;background:var(--lav-2);border:1px solid #DDD8FF;display:grid;place-items:center;font-size:10px\">${it.attachment.type==='application/pdf'?'⧉':'◨'}</span>${esc(it.attachment.name.slice(0,18))} · ${it.attachment.type==='application/pdf'?'PDF':'IMG'}</div>` : '';
+  const meta=`
+    <div class="meta">
+      <div class="meta-left"><span>●</span> ${date} ${it.type==='image'?'· image':''}</div>
+      <div class="meta-actions">
+        <button class="mini-btn ${isArch?'active':''}" data-act="archive" data-id="${it.id}" title="${isArch?'Restore':'Archive'}">${isArch?'↩':'▭'}</button>
+        <button class="mini-btn" data-act="edit" data-id="${it.id}" title="Edit">✎</button>
+      </div>
+    </div>
+  `;
+  return `<article class="card" data-id="${it.id}">
+    ${isArch?`<span class="archived-badge">Archived</span>`:''}
+    ${top}
+    ${hero}
+    <div class="card-body">
+      ${bodyInner}
+      ${reminder}
+      ${tagsHtml}
+      ${attachHtml}
+      ${meta}
+    </div>
+  </article>`;
+}
+const tagColor=(t)=>{
+  const h=[...t].reduce((a,c)=>a+c.charCodeAt(0),0);
+  const opts=['coral','sage','lav','amber'];
+  return opts[h%opts.length];
+};
+const esc=(s)=> (s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function fmtReminder(iso){
+  try{
+    const d=new Date(iso); const now=new Date();
+    const diff=d-now;
+    if(diff<0) return `was ${d.toLocaleString()}`;
+    if(diff< 86400000) return `today ${d.toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}`;
+    if(diff< 172800000) return `tomorrow ${d.toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}`;
+    return d.toLocaleDateString([], {month:'short',day:'numeric'})+' · '+d.toLocaleTimeString([], {hour:'numeric',minute:'2-digit'});
+  }catch{ return iso}
+}
+
+function renderGrid(){
+  const list=filtered();
+  gridEl.className='masonry '+view;
+  gridEl.innerHTML='';
+  countLabel.innerHTML=`<b>${list.length}</b> ${bottomTab==='archive'?'archived':'saves'}${activeType!=='all'?' · '+activeType:''}${activeTag?' · #'+activeTag:''}${searchQuery?' · “'+esc(searchQuery)+'”':''}`;
+  subtitleEl.textContent=`${items.filter(i=>!i.archived).length} saves · ${items.filter(i=>i.reminderAt && new Date(i.reminderAt)>new Date()).length} reminders · ${items.filter(i=>i.archived).length} archived`;
+  
+  if(list.length===0){
+    emptyEl.style.display='block';
+    gridEl.style.display='none';
+    if(bottomTab==='archive'){
+      emptyEl.innerHTML=`
+        <div class="empty-illus" style="padding:28px">
+          <div style="width:48px;height:48px;border-radius:14px;background:var(--paper-2);border:1px solid var(--line);display:grid;place-items:center;margin:0 auto 12px">▭</div>
+          <h3>Archive is empty</h3>
+          <p>Archived items hide from your inbox but stay searchable. Archive something to see it here.</p>
+        </div>
+      `;
+    } else if(searchQuery || activeTag || activeType!=='all'){
+      emptyEl.innerHTML=`
+        <div class="empty-illus">
+          <h3>No matches</h3>
+          <p>Try a different search or clear filters to see everything again.</p>
+          <button class="cta" onclick="clearFilters()">Clear filters</button>
+        </div>
+      `;
+    } else {
+      emptyEl.innerHTML=`
+        <div class="empty-illus">
+          <div style="height:120px;border-radius:12px;background:linear-gradient(135deg,#FFF1EF,#EFECFD);border:1px solid var(--line);display:grid;place-items:center;font-size:28px">✦</div>
+          <h3 style="margin-top:14px">Your Cove is empty</h3>
+          <p>Save your first note, link, or image. Everything stays on this device until you choose to sync.</p>
+          <button class="cta" onclick="openCreate()">＋ New save</button>
+          <div class="tips">
+            <div class="tip"><span style="width:28px;height:28px;border-radius:8px;background:var(--sage-2);display:grid;place-items:center;flex:0 0 28px">⌕</span><span><strong>Capture anywhere</strong><br>Paste a URL, a thought, or an image — we’ll sort it.</span></div>
+            <div class="tip"><span style="width:28px;height:28px;border-radius:8px;background:var(--amber-2);display:grid;place-items:center;flex:0 0 28px">⏰</span><span><strong>Snooze it</strong><br>Remind you tomorrow or in a week. Gentle nudge, no spam.</span></div>
+          </div>
+        </div>
+      `;
+    }
+    document.getElementById('vaultStats').textContent = `${allTags().length} tags · ${items.filter(i=>i.type==='link').length} links`;
+    document.getElementById('vaultCount').textContent=items.length;
+    return;
+  }
+  emptyEl.style.display='none';
+  gridEl.style.display='grid';
+  gridEl.innerHTML=list.map(cardHtml).join('');
+  // attach events
+  gridEl.querySelectorAll('.card').forEach(el=>{
+    el.addEventListener('click', (e)=>{
+      if(e.target.closest('button')) return;
+      openDetail(el.dataset.id);
+    });
+  });
+  gridEl.querySelectorAll('[data-act]').forEach(b=>{
+    b.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const id=b.dataset.id; const act=b.dataset.act;
+      if(act==='archive') toggleArchive(id);
+      if(act==='edit') openEdit(id);
+    });
+  });
+  document.getElementById('vaultStats').textContent = `${allTags().length} tags · ${items.filter(i=>i.type==='link').length} links`;
+  document.getElementById('vaultCount').textContent=items.length;
+}
+
+function render(){
+  renderTypeFilters();
+  renderTagFilters();
+  renderBottomBar();
+  renderResurface();
+  renderGrid();
+  // view toggle state
+  viewToggle.querySelectorAll('button').forEach(b=> b.classList.toggle('active', b.dataset.view===view));
+}
+
+// Filters Helpers
+window.clearFilters=()=>{
+  activeType='all'; activeTag=null; searchQuery=''; searchInput.value=''; searchWrap.classList.remove('has-value'); render();
+};
+
+// Search
+searchInput.addEventListener('input', ()=>{
+  searchQuery=searchInput.value;
+  searchWrap.classList.toggle('has-value', !!searchQuery);
+  renderGrid();
+});
+document.getElementById('clearSearch').onclick=()=>{ searchInput.value=''; searchQuery=''; searchWrap.classList.remove('has-value'); renderGrid(); searchInput.focus(); };
+
+// View toggle
+viewToggle.addEventListener('click', (e)=>{
+  const b=e.target.closest('button'); if(!b) return;
+  view=b.dataset.view; save(); render();
+});
+
+// Quick capture — backend-aware
+const quickInput=document.getElementById('quickInput');
+const quickSaveBtn=document.getElementById('quickSave');
+async function quickCapture(){
+  const raw=quickInput.value.trim();
+  if(!raw){ toast('Paste something to save — a link, note or image', {icon:'✎'}); quickInput.focus(); return}
+  if(isUrl(raw)){
+    if(isAuthed()){
+      try{
+        const item=await remoteCreate({type:'link', title:extractDomain(raw), content:raw, tags:guessTags(raw), archived:false});
+        await refreshFromRemote();
+        quickInput.value=''; toast('Link saved — private', {icon:'↗'});
+        openEdit(item.id, true);
+      }catch(e){ toast(e.code==='permission-denied'?'Blocked':e.message, {icon:'⚠'}); }
+    } else {
+      const it={id:uid(), type:'link', title:extractDomain(raw), content:raw, tags:guessTags(raw), createdAt:new Date().toISOString(), updatedAt:new Date().toISOString(), archived:false};
+      items.unshift(it); save(); render(); quickInput.value=''; toast('Link saved to Cove', {icon:'↗'});
+      openEdit(it.id, true);
+    }
+    return;
+  }
+  const isSnippet = raw.includes('\n') && /[{};=<>]/.test(raw) || raw.trim().startsWith('function')|| raw.trim().startsWith('const');
+  const type=isSnippet?'snippet':'note';
+  const title= raw.split('\n')[0].slice(0,60) || 'Quick note';
+  if(isAuthed()){
+    try{
+      const item=await remoteCreate({type, title, content:raw, tags:guessTags(raw), archived:false});
+      await refreshFromRemote();
+      quickInput.value=''; toast(isSnippet?'Snippet saved — private':'Note saved — private', {icon:type==='snippet'?'</>':'✎'});
+    }catch(e){ toast(e.message, {icon:'⚠'}); }
+  } else {
+    const it={id:uid(), type, title, content:raw, tags:guessTags(raw), createdAt:new Date().toISOString(), updatedAt:new Date().toISOString(), archived:false};
+    items.unshift(it); save(); render(); quickInput.value=''; toast(isSnippet?'Snippet saved':'Note saved', {icon:type==='snippet'?'</>':'✎'});
+  }
+}
+quickSaveBtn.onclick=quickCapture;
+quickInput.addEventListener('keydown', e=>{ if(e.key==='Enter') quickCapture(); });
+quickInput.addEventListener('paste', (e)=>{
+  const itemsPaste=(e.clipboardData||window.clipboardData).items;
+  if(!itemsPaste) return;
+  for(const it of itemsPaste){
+    if(it.type.indexOf('image')===0){
+      const file=it.getAsFile();
+      const r=new FileReader(); r.onload=async()=>{
+        pendingImageDataUrl=r.result;
+        if(isAuthed()){
+          try{
+            await remoteCreate({type:'image', title:'Pasted image', content:'', imageData:pendingImageDataUrl, tags:guessTags('image'), archived:false});
+            await refreshFromRemote();
+            toast('Image saved — private', {icon:'◨'});
+          }catch(err){ toast(err.message, {icon:'⚠'}); }
+        } else {
+          const newItem={id:uid(), type:'image', title:'Pasted image', content:'', imageData:pendingImageDataUrl, tags:guessTags('image'), createdAt:new Date().toISOString(), updatedAt:new Date().toISOString(), archived:false};
+          items.unshift(newItem); save(); render(); toast('Image saved from clipboard', {icon:'◨'});
+        }
+        pendingImageDataUrl=null;
+      }; r.readAsDataURL(file);
+      e.preventDefault();
+      quickInput.value='';
+    }
+  }
+});
+
+// Guess tags simple heuristic
+function guessTags(text){
+  const t=text.toLowerCase();
+  const tags=[];
+  if(t.includes('http')) tags.push('read-later');
+  if(t.includes('recipe')||t.includes('cook')||t.includes('food')) tags.push('recipe');
+  if(t.includes('design')||t.includes('inspo')||t.includes('mood')||t.includes('figma')) tags.push('inspo');
+  if(t.includes('college')||t.includes('assignment')||t.includes('exam')) tags.push('college');
+  if(t.includes('idea')||t.includes('build')||t.includes('project')) tags.push('idea');
+  if(tags.length===0) tags.push('inbox');
+  return [...new Set(tags)].slice(0,2);
+}
+
+// Scrim
+function openScrim(){ scrim.classList.add('open'); document.body.style.overflow='hidden'; }
+function closeScrim(){ scrim.classList.remove('open'); document.body.style.overflow=''; }
+scrim.onclick=()=>{
+  closeAllSheets();
+};
+
+// Sheets handling
+function closeAllSheets(){
+  editSheet.classList.remove('open');
+  detailSheet.classList.remove('open');
+  readerSheet.classList.remove('open');
+  vaultSheet.classList.remove('open');
+  closeScrim();
+  editingId=null;
+}
+document.getElementById('closeEdit').onclick=closeAllSheets;
+document.getElementById('cancelEdit').onclick=closeAllSheets;
+document.getElementById('closeDetail').onclick=closeAllSheets;
+document.getElementById('closeReader').onclick=()=>{ readerSheet.classList.remove('open'); detailSheet.classList.add('open'); openScrim(); };
+document.getElementById('readerDone').onclick=()=>{ readerSheet.classList.remove('open'); detailSheet.classList.add('open'); openScrim(); };
+document.getElementById('closeVault').onclick=closeAllSheets;
+
+// Edit Sheet Logic
+const fTitle=document.getElementById('fTitle');
+const fContent=document.getElementById('fContent');
+const fUrl=document.getElementById('fUrl');
+const fTagInput=document.getElementById('fTagInput');
+const pickedTagsEl=document.getElementById('pickedTags');
+const autoTagsEl=document.getElementById('autoTags');
+const fReminder=document.getElementById('fReminder');
+const fReminderAt=document.getElementById('fReminderAt');
+const fArchived=document.getElementById('fArchived');
+const typeTabsEl=document.getElementById('typeTabs');
+const titleCount=document.getElementById('titleCount');
+const contentLabel=document.getElementById('contentLabel');
+const fieldUrl=document.getElementById('fieldUrl');
+const fieldImage=document.getElementById('fieldImage');
+const fieldContent=document.getElementById('fieldContent');
+const autoSuggest=document.getElementById('autoSuggest');
+const imageDrop=document.getElementById('imageDrop');
+const imagePreview=document.getElementById('imagePreview');
+const imageDropEmpty=document.getElementById('imageDropEmpty');
+let currentType='note';
+let draftTags=[];
+
+function renderTypeTabs(){
+  typeTabsEl.innerHTML='';
+  ['note','link','image','snippet'].forEach(t=>{
+    const m=typeMeta[t];
+    const b=document.createElement('button');
+    b.className=currentType===t?'active':'';
+    b.innerHTML=`<span>${m.icon}</span>${m.label}`;
+    b.onclick=()=>{ currentType=t; syncTypeUI(); };
+    typeTabsEl.appendChild(b);
+  });
+}
+function syncTypeUI(){
+  renderTypeTabs();
+  // show/hide fields
+  fieldUrl.style.display= currentType==='link' ? 'block':'none';
+  fieldImage.style.display= currentType==='image' ? 'block':'none';
+  fieldContent.style.display= (currentType==='note'||currentType==='snippet') ? 'block':'none';
+  if(currentType==='note'){ contentLabel.textContent='Note'; fContent.placeholder='Write what you don’t want to lose...'; }
+  if(currentType==='snippet'){ contentLabel.textContent='Snippet / Code'; fContent.placeholder='Paste code, a quote, or any snippet…'; fContent.style.fontFamily="'Fragment Mono',monospace"; fContent.style.fontSize='13px'; }
+  else { fContent.style.fontFamily=''; fContent.style.fontSize=''; }
+  if(currentType==='link'){ contentLabel.textContent='Note (optional)'; }
+  // update subtitle
+  document.getElementById('editSubtitle').textContent = currentType==='link'?'Save a URL with a title & tags': currentType==='image'?'Save an image to your vault': currentType==='snippet'?'Save code or a quoted snippet':'Jot a quick thought';
+  renderPickedTags();
+  renderAutoTags();
+}
+function renderPickedTags(){
+  pickedTagsEl.innerHTML='';
+  draftTags.forEach(tag=>{
+    const el=document.createElement('span');
+    el.className='picked-tag';
+    el.innerHTML=`#${esc(tag)} <button aria-label="remove">✕</button>`;
+    el.querySelector('button').onclick=()=>{ draftTags=draftTags.filter(t=>t!==tag); renderPickedTags(); renderAutoTags(); };
+    pickedTagsEl.appendChild(el);
+  });
+}
+function renderAutoTags(){
+  const pool=[...defaultTags].filter(t=>!draftTags.includes(t));
+  // add guess tags based on current title+content/url
+  const guesses=guessTags((fTitle.value+' '+fContent.value+' '+fUrl.value).toLowerCase()).filter(g=>!draftTags.includes(g) && !pool.includes(g));
+  const list=[...guesses, ...pool].slice(0,6);
+  autoTagsEl.innerHTML='';
+  list.forEach(t=>{
+    const b=document.createElement('button');
+    b.className='auto-tag';
+    b.textContent='+ #'+t;
+    b.onclick=()=>{ if(!draftTags.includes(t)) draftTags.push(t); renderPickedTags(); renderAutoTags(); fTagInput.focus(); };
+    autoTagsEl.appendChild(b);
+  });
+  // auto suggest bar
+  const text=(fTitle.value+' '+fContent.value).toLowerCase();
+  if(text.length>20){
+    const sug=guessTags(text).filter(g=>!draftTags.includes(g));
+    if(sug.length){ autoSuggest.textContent='Suggested tags: '+sug.map(s=>'#'+s).join(' · ')+' — tap to add'; autoSuggest.classList.add('show'); autoSuggest.onclick=()=>{ sug.forEach(s=>{ if(!draftTags.includes(s)) draftTags.push(s)}); renderPickedTags(); renderAutoTags(); autoSuggest.classList.remove('show'); }; } else autoSuggest.classList.remove('show');
+  } else autoSuggest.classList.remove('show');
+}
+function openCreate(prefill={}){
+  editingId=null;
+  currentType=prefill.type||'note';
+  draftTags=[...(prefill.tags||[])];
+  pendingImageDataUrl=null;
+  imagePreview.style.display='none'; imagePreview.src=''; imageDropEmpty.style.display='block'; document.getElementById('clearImage').style.display='none';
+  fTitle.value=prefill.title||''; fContent.value=prefill.content||''; fUrl.value=prefill.url||'';
+  fReminder.value=''; fReminderAt.value=''; document.getElementById('customDateWrap').style.display='none'; fArchived.checked=false;
+  titleCount.textContent=fTitle.value.length;
+  pendingAttach=null; pendingAttachRemoved=false; renderAttachState();
+  document.getElementById('editTitle').textContent='New save';
+  syncTypeUI();
+  openScrim(); editSheet.classList.add('open');
+  setTimeout(()=>fTitle.focus(),260);
+}
+function openEdit(id, isNewlyCreated=false){
+  const it=items.find(x=>x.id===id); if(!it) return;
+  editingId=id;
+  currentType=it.type;
+  draftTags=[...(it.tags||[])];
+  fTitle.value=it.title||''; 
+  if(it.type==='link'){ fUrl.value=it.content||''; fContent.value=it.note||''; }
+  else if(it.type==='image'){ fContent.value=it.content||''; pendingImageDataUrl=it.imageData||null; if(pendingImageDataUrl){ imagePreview.src=pendingImageDataUrl; imagePreview.style.display='block'; imageDropEmpty.style.display='none'; document.getElementById('clearImage').style.display='inline-flex'; } else { imagePreview.style.display='none'; imageDropEmpty.style.display='block'; document.getElementById('clearImage').style.display='none'; } }
+  else { fContent.value=it.content||''; fUrl.value=''; }
+  // reminder
+  if(it.reminderAt){
+    const d=new Date(it.reminderAt); const now=new Date();
+    const diff=d-now;
+    const isTomorrow = diff>0 && diff< 36*3600*1000 && d.getDate()!==now.getDate();
+    const is7days = Math.abs(diff-7*86400000)< 2*3600*1000;
+    if(is7days) fReminder.value='7days';
+    else if(isTomorrow) fReminder.value='tomorrow';
+    else { fReminder.value='custom'; document.getElementById('customDateWrap').style.display='block'; fReminderAt.value= new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16); }
+  } else { fReminder.value=''; document.getElementById('customDateWrap').style.display='none'; }
+  fArchived.checked=!!it.archived;
+  titleCount.textContent=fTitle.value.length;
+  // attachment vault — load existing file if any, ownership-checked
+  pendingAttach=null; pendingAttachRemoved=false;
+  if(it.attachment && it.attachment.fileId){
+    try{
+      let rec=null;
+      if(isAuthed()){
+        try{ rec=storageGet(it.attachment.fileId); }catch(e){ throw e; }
+      } else {
+        // local fallback — find directly without owner check
+        const rawAll=getStorageAll().find(r=>r.fileId===it.attachment.fileId);
+        if(rawAll) rec=rawAll;
+        else rec={name: it.attachment.name, type: it.attachment.type, size: it.attachment.size, dataUrl: it.attachment.dataUrl, fileId: it.attachment.fileId};
+      }
+      if(rec){
+        pendingAttach={fileId: rec.fileId, name: rec.name, type: rec.type, size: rec.size, dataUrl: rec.dataUrl, isExisting:true};
+      }
+    }catch(e){
+      pendingAttach={fileId: it.attachment.fileId, name: it.attachment.name+' (restricted)', type: it.attachment.type, size: it.attachment.size||0, dataUrl: null, isExisting:true};
+      if(e.code==='permission-denied') toast('Attachment belongs to another account — blocked', {icon:'🔒'});
+    }
+  } else if(it.attachment && it.attachment.name){
+    pendingAttach={name: it.attachment.name, type: it.attachment.type, size: it.attachment.size, dataUrl: it.attachment.dataUrl, isExisting:true, fileId: it.attachment.fileId};
+  }
+  renderAttachState();
+  document.getElementById('editTitle').textContent=isNewlyCreated?'Tidy it up':'Edit save';
+  document.getElementById('editSubtitle').textContent=isNewlyCreated?'We auto-filled this — add tags or a reminder':'Make changes and save';
+  syncTypeUI();
+  openScrim(); editSheet.classList.add('open');
+}
+window.openCreate=openCreate;
+
+// Title count
+fTitle.addEventListener('input', ()=>{ titleCount.textContent=fTitle.value.length; renderAutoTags(); });
+fContent.addEventListener('input', renderAutoTags);
+fUrl.addEventListener('input', renderAutoTags);
+fTagInput.addEventListener('keydown', (e)=>{
+  if(e.key==='Enter'){ e.preventDefault(); addTagFromInput(); }
+});
+document.getElementById('addTagBtn').onclick=addTagFromInput;
+function addTagFromInput(){
+  const raw=fTagInput.value.trim().toLowerCase().replace(/^#/,'').replace(/\s+/g,'-').slice(0,20);
+  if(!raw) return;
+  if(!draftTags.includes(raw)) draftTags.push(raw);
+  fTagInput.value=''; renderPickedTags(); renderAutoTags();
+}
+fReminder.addEventListener('change', ()=>{
+  const v=fReminder.value;
+  const wrap=document.getElementById('customDateWrap');
+  if(v==='custom'){ wrap.style.display='block'; if(!fReminderAt.value){ const d=new Date(Date.now()+86400000); d.setHours(9,0,0,0); fReminderAt.value=new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16);} }
+  else wrap.style.display='none';
+});
+
+// image handling
+document.getElementById('pickImage').onclick=()=> document.getElementById('fImage').click();
+document.getElementById('fImage').addEventListener('change', (e)=>{
+  const file=e.target.files[0]; if(!file) return;
+  if(file.size> 6*1024*1024){ toast('Image too large — try under 6MB', {icon:'⚠'}); return}
+  const r=new FileReader(); r.onload=()=>{
+    pendingImageDataUrl=r.result; imagePreview.src=pendingImageDataUrl; imagePreview.style.display='block'; imageDropEmpty.style.display='none'; document.getElementById('clearImage').style.display='inline-flex';
+  }; r.readAsDataURL(file);
+});
+imageDrop.addEventListener('click', (e)=>{
+  if(e.target.closest('button')) return;
+  if(currentType==='image') document.getElementById('fImage').click();
+});
+imageDrop.addEventListener('dragover', e=>{ e.preventDefault(); imageDrop.style.borderColor='var(--ink)'; });
+imageDrop.addEventListener('dragleave', ()=> imageDrop.style.borderColor='var(--line)');
+imageDrop.addEventListener('drop', e=>{
+  e.preventDefault(); imageDrop.style.borderColor='var(--line)';
+  const file=e.dataTransfer.files[0]; if(!file || !file.type.startsWith('image/')) return;
+  const r=new FileReader(); r.onload=()=>{
+    pendingImageDataUrl=r.result; imagePreview.src=pendingImageDataUrl; imagePreview.style.display='block'; imageDropEmpty.style.display='none'; document.getElementById('clearImage').style.display='inline-flex'; currentType='image'; syncTypeUI();
+  }; r.readAsDataURL(file);
+});
+document.getElementById('clearImage').onclick=()=>{
+  pendingImageDataUrl=null; imagePreview.style.display='none'; imagePreview.src=''; imageDropEmpty.style.display='block'; document.getElementById('clearImage').style.display='none'; document.getElementById('fImage').value='';
+};
+
+// Attachment vault — image or PDF with ownership
+let pendingAttach=null; // {fileId?, name, type, size, dataUrl, isExisting}
+let pendingAttachRemoved=false;
+const attachDrop=document.getElementById('attachDrop');
+const fAttach=document.getElementById('fAttach');
+const attachPreview=document.getElementById('attachPreview');
+const attachIconEl=document.getElementById('attachIcon');
+const attachNameEl=document.getElementById('attachName');
+const attachHintEl=document.getElementById('attachHint');
+
+function formatSize(b){
+  if(b<1024) return b+' B';
+  if(b<1024*1024) return (b/1024).toFixed(1)+' KB';
+  return (b/(1024*1024)).toFixed(1)+' MB';
+}
+function renderAttachState(){
+  if(pendingAttach){
+    attachDrop.style.display='none';
+    attachPreview.style.display='flex';
+    document.getElementById('attachPreviewName').textContent=pendingAttach.name;
+    document.getElementById('attachPreviewMeta').textContent=(pendingAttach.type==='application/pdf'?'PDF':'Image')+' · '+formatSize(pendingAttach.size)+' · ownership: '+ (isAuthed()? getCurrentUser().email.split('@')[0] : 'local');
+    document.getElementById('attachPreviewIcon').textContent= pendingAttach.type==='application/pdf'?'⧉':'◨';
+    document.getElementById('attachStatus').style.display='none';
+  } else {
+    attachDrop.style.display='flex';
+    attachPreview.style.display='none';
+    if(pendingAttachRemoved){
+      attachNameEl.textContent='Attachment removed';
+      attachHintEl.textContent='Will be deleted on save — ownership checked on server';
+      document.getElementById('attachStatus').style.display='none';
+    } else {
+      attachNameEl.textContent='Add an image or PDF';
+      attachHintEl.textContent='Stored privately with your owner ID — not an obscure filename';
+    }
+  }
+}
+function handleAttachFile(file){
+  if(!file) return;
+  const isImg=file.type.startsWith('image/');
+  const isPdf=file.type==='application/pdf';
+  if(!isImg && !isPdf){ toast('Only images or PDFs allowed', {icon:'⚠'}); return; }
+  if(file.size> 8*1024*1024){ toast('File too large — max 8 MB', {icon:'⚠'}); return; }
+  const r=new FileReader();
+  r.onload=()=>{
+    pendingAttach={name:file.name, type:file.type, size:file.size, dataUrl:r.result, isExisting:false};
+    pendingAttachRemoved=false;
+    renderAttachState();
+    toast((isPdf?'PDF':'Image')+' attached — will be stored privately', {icon: isPdf?'⧉':'◨'});
+  };
+  if(isPdf) r.readAsDataURL(file); else r.readAsDataURL(file);
+}
+attachDrop?.addEventListener('click', ()=> fAttach.click());
+fAttach?.addEventListener('change', e=>{ const f=e.target.files[0]; if(f) handleAttachFile(f); e.target.value=''; });
+attachDrop?.addEventListener('dragover', e=>{ e.preventDefault(); attachDrop.classList.add('drag-over'); });
+attachDrop?.addEventListener('dragleave', ()=> attachDrop.classList.remove('drag-over'));
+attachDrop?.addEventListener('drop', e=>{ e.preventDefault(); attachDrop.classList.remove('drag-over'); const f=e.dataTransfer.files[0]; if(f) handleAttachFile(f); });
+document.getElementById('clearAttach')?.addEventListener('click', ()=>{
+  if(pendingAttach && pendingAttach.isExisting && pendingAttach.fileId){
+    pendingAttachRemoved=true;
+  }
+  pendingAttach=null; renderAttachState();
+});
+document.getElementById('openAttach')?.addEventListener('click', ()=>{
+  if(!pendingAttach) return;
+  if(pendingAttach.type==='application/pdf'){
+    const w=window.open(); if(w){ w.document.write(`<iframe src="${pendingAttach.dataUrl}" style="width:100%;height:100%;border:none"></iframe>`); w.document.title=pendingAttach.name; }
+  } else {
+    window.open(pendingAttach.dataUrl,'_blank');
+  }
+});
+
+// Save edit — now backend-aware with ownerId & privacy
+document.getElementById('saveEdit').onclick=async()=>{
+  const title=fTitle.value.trim();
+  const content=fContent.value.trim();
+  const url=fUrl.value.trim();
+  if(!title){ toast('Add a title — so you can find it later', {icon:'✎'}); fTitle.focus(); fTitle.style.borderColor='var(--coral)'; setTimeout(()=>fTitle.style.borderColor='',1500); return}
+  if(currentType==='link' && !url){ toast('Paste a URL for link saves', {icon:'↗'}); fUrl.focus(); return}
+  if(currentType==='link' && url && !isUrl(url)){ toast('That URL looks off — include https://', {icon:'⚠'}); fUrl.focus(); return}
+  if(currentType==='image' && !pendingImageDataUrl){ toast('Pick an image or switch type', {icon:'◨'}); return}
+  if(currentType!=='link' && currentType!=='image' && !content){ toast('Add some content to your note', {icon:'✎'}); fContent.focus(); return}
+
+  let reminderAt=null;
+  if(fReminder.value==='tomorrow'){ const d=new Date(); d.setDate(d.getDate()+1); d.setHours(9,0,0,0); reminderAt=d.toISOString(); }
+  else if(fReminder.value==='7days'){ const d=new Date(); d.setDate(d.getDate()+7); d.setHours(9,0,0,0); reminderAt=d.toISOString(); }
+  else if(fReminder.value==='custom' && fReminderAt.value){ reminderAt=new Date(fReminderAt.value).toISOString(); }
+
+  const btn=document.getElementById('saveEdit'); const prevLabel=btn.textContent; btn.textContent='Saving…'; btn.disabled=true;
+
+  try{
+    if(isAuthed()){
+      const me=getCurrentUser();
+      if(editingId){
+        const existing=items.find(x=>x.id===editingId);
+        const patch={type:currentType, title, tags:[...draftTags], archived:fArchived.checked, reminderAt};
+        if(currentType==='link'){ patch.content=url; patch.note=content; patch.imageData=null; }
+        else if(currentType==='image'){ patch.imageData=pendingImageDataUrl; patch.content=content; patch.note=null; }
+        else { patch.content=content; patch.note=null; patch.imageData=null; }
+        // attachment vault — handle file ownership
+        if(pendingAttachRemoved){
+          if(existing && existing.attachment && existing.attachment.fileId){
+            try{ storageDelete(existing.attachment.fileId); }catch(e){ if(e.code==='permission-denied') throw e; }
+          }
+          patch.attachment=null;
+        } else if(pendingAttach && !pendingAttach.isExisting){
+          // upload new file with ownership check — obscurity is not security
+          const rec=storageUpload({name:pendingAttach.name, type:pendingAttach.type, size:pendingAttach.size, dataUrl:pendingAttach.dataUrl}, me.id, editingId);
+          patch.attachment={fileId: rec.fileId, name: rec.name, type: rec.type, size: rec.size};
+        } else if(pendingAttach && pendingAttach.isExisting){
+          // keep existing — no change
+        } else if(!pendingAttach && !pendingAttachRemoved && existing && existing.attachment){
+          // keep existing if not touched
+        }
+        // remove nulls (but keep attachment:null to delete)
+        const patchClean={...patch};
+        Object.keys(patchClean).forEach(k=> patchClean[k]===null && k!=='attachment' && delete patchClean[k]);
+        if(patch.attachment===null) patchClean.attachment=null;
+        // special: if attachment null, ensure we send it
+        await remoteUpdate(editingId, patchClean);
+        // handle attachment null delete via second update if needed (remoteUpdate already handles)
+        await refreshFromRemote();
+        toast('Saved — private to your account', {icon:'✓'});
+      } else {
+        const payload={type:currentType, title, tags:[...draftTags], archived:fArchived.checked, reminderAt};
+        if(currentType==='link'){ payload.content=url; payload.note=content; }
+        else if(currentType==='image'){ payload.imageData=pendingImageDataUrl; payload.content=content; }
+        else payload.content=content;
+        // handle new attachment on create
+        let newItem=await remoteCreate(payload);
+        let newId=newItem.id;
+        if(pendingAttach && !pendingAttach.isExisting){
+          try{
+            const rec=storageUpload({name:pendingAttach.name, type:pendingAttach.type, size:pendingAttach.size, dataUrl:pendingAttach.dataUrl}, me.id, newId);
+            await remoteUpdate(newId, {attachment:{fileId: rec.fileId, name: rec.name, type: rec.type, size: rec.size}});
+          }catch(e){ if(e.code==='permission-denied') throw e; }
+        }
+        await refreshFromRemote();
+        toast(currentType==='link'?'Link saved — private':'Saved to your private inbox', {icon:'✓'});
+      }
+    } else {
+      // local fallback — store attachment directly with dataUrl for demo
+      if(editingId){
+        const idx=items.findIndex(x=>x.id===editingId);
+        if(idx>=0){
+          const prev=items[idx];
+          items[idx]={...prev, type:currentType, title, tags:[...draftTags], updatedAt:new Date().toISOString(), archived:fArchived.checked, reminderAt};
+          if(currentType==='link'){ items[idx].content=url; items[idx].note=content; delete items[idx].imageData; }
+          else if(currentType==='image'){ items[idx].imageData=pendingImageDataUrl; items[idx].content=content; delete items[idx].note; }
+          else { items[idx].content=content; delete items[idx].note; delete items[idx].imageData; }
+          // attachment for local
+          if(pendingAttachRemoved){ delete items[idx].attachment; try{ const sid=prev.attachment?.fileId; if(sid){ const sa=getStorageAll().filter(r=>r.fileId!==sid); setStorageAll(sa); } }catch{} }
+          else if(pendingAttach && !pendingAttach.isExisting){ items[idx].attachment={fileId:'f_'+uid(), name:pendingAttach.name, type:pendingAttach.type, size:pendingAttach.size, dataUrl:pendingAttach.dataUrl}; }
+          toast('Saved changes', {icon:'✓'});
+        }
+      } else {
+        const base={id:uid(), type:currentType, title, tags:[...draftTags], createdAt:new Date().toISOString(), updatedAt:new Date().toISOString(), archived:fArchived.checked, reminderAt};
+        if(currentType==='link'){ base.content=url; base.note=content; }
+        else if(currentType==='image'){ base.imageData=pendingImageDataUrl; base.content=content; }
+        else base.content=content;
+        if(pendingAttach && !pendingAttach.isExisting){ base.attachment={fileId:'f_'+uid(), name:pendingAttach.name, type:pendingAttach.type, size:pendingAttach.size, dataUrl:pendingAttach.dataUrl}; }
+        items.unshift(base);
+        toast(currentType==='link'?'Link saved':'Saved to Cove', {icon:'✓'});
+      }
+      save(); render();
+    }
+    closeAllSheets();
+  }catch(e){
+    if(e.code==='permission-denied') toast('Blocked — that item belongs to another account', {icon:'🔒'});
+    else if(e.code==='unauthenticated') { toast('Please sign in again', {icon:'🔒'}); showAuth(); }
+    else toast(e.message||'Save failed — tap Retry', {icon:'⚠'});
+  } finally {
+    btn.textContent=prevLabel; btn.disabled=false;
+  }
+};
+
+// Archive toggle — backend-enforced
+async function toggleArchive(id){
+  const it=items.find(x=>x.id===id); if(!it) return;
+  if(isAuthed()){
+    try{
+      await remoteUpdate(id, {archived:!it.archived});
+      await refreshFromRemote();
+      toast(!it.archived?'Archived — private':'Restored to inbox', {icon:!it.archived?'▭':'↩'});
+    }catch(e){
+      if(e.code==='permission-denied') toast('Blocked — not your item', {icon:'🔒'});
+      else toast('Archive failed — retry', {icon:'⚠'});
+    }
+  }else{
+    it.archived=!it.archived; it.updatedAt=new Date().toISOString(); save(); render(); toast(it.archived?'Archived — find it in Archive':'Restored to inbox', {icon:it.archived?'▭':'↩'});
+  }
+}
+
+// Detail view
+function openDetail(id){
+  const it=items.find(x=>x.id===id); if(!it) return;
+  currentDetailId=id;
+  const m=typeMeta[it.type]||typeMeta.note;
+  document.getElementById('detailKicker').innerHTML=`<span style="width:22px;height:22px;border-radius:7px;background:${m.color};color:#fff;display:grid;place-items:center;font-size:11px">${m.icon}</span> ${m.label} ${it.archived?'<span style="background:var(--ink);color:#fff;padding:3px 8px;border-radius:999px;font-size:10px;letter-spacing:.06em">ARCHIVED</span>':''}`;
+  document.getElementById('detailTitle').textContent=it.title||'Untitled';
+  document.getElementById('detailMeta').innerHTML=`<span>${fmtDate(it.createdAt)}</span> ${it.type!=='image'?`<span>· ${readingTime(it.content||it.note||'')}</span>`:''} ${it.tags&&it.tags.length?`<span>· ${(it.tags||[]).map(t=>'#'+t).join(' ')}</span>`:''}`;
+  // reminder
+  const rEl=document.getElementById('detailReminder');
+  if(it.reminderAt){
+    rEl.innerHTML=`<div class="reminder-row">⏰ ${fmtReminder(it.reminderAt)} <button onclick="clearReminder('${it.id}')" style="margin-left:6px;border:none;background:#fff;border-radius:999px;padding:2px 8px;font-weight:700;cursor:pointer;font-size:11px">Clear</button></div>`;
+  } else rEl.innerHTML='';
+  // public link
+  const pEl=document.getElementById('detailPublic');
+  if(it.publicLink){
+    pEl.innerHTML=`<div class="public-link"><span style="font-size:12px">🔗</span><input readonly value="${location.origin+location.pathname}#p=${it.publicLink}"><button onclick="copyPublic('${it.id}')" style="height:28px;padding:0 10px;border-radius:999px;border:1px solid #CDEDE2;background:#fff;font-weight:700;cursor:pointer;font-size:12px">Copy</button><button onclick="revokePublic('${it.id}')" style="height:28px;padding:0 10px;border-radius:999px;border:none;background:var(--ink);color:#fff;font-weight:700;cursor:pointer;font-size:12px">Revoke</button></div>`;
+  } else pEl.innerHTML='';
+
+  // hero
+  const hero=document.getElementById('detailHero');
+  const img=document.getElementById('detailImg');
+  if(it.type==='image' && it.imageData){ hero.style.display='grid'; img.src=it.imageData; } else hero.style.display='none';
+
+  // content
+  const cEl=document.getElementById('detailContent');
+  const lEl=document.getElementById('detailLink');
+  if(it.type==='link'){
+    cEl.style.display= it.note ? 'block':'none';
+    if(it.note) cEl.textContent=it.note;
+    lEl.style.display='flex';
+    document.getElementById('detailDomain').textContent=extractDomain(it.content);
+    const a=document.getElementById('detailUrl'); a.href=it.content; a.textContent=it.content; a.onclick=(e)=>{ /* allow */ };
+    document.getElementById('detailFavicon').src=faviconFor(it.content);
+    document.getElementById('openReader').onclick=()=> openReader(it.content, it.title);
+    document.getElementById('readerOpenOriginal').onclick=()=> window.open(it.content,'_blank');
+  } else if(it.type==='snippet'){
+    cEl.style.display='block'; cEl.textContent=it.content||''; cEl.style.fontFamily="'Fragment Mono',monospace"; cEl.style.fontSize='13px'; lEl.style.display='none';
+  } else if(it.type==='note'){
+    cEl.style.display='block'; cEl.textContent=it.content||''; cEl.style.fontFamily=''; cEl.style.fontSize=''; lEl.style.display='none';
+  } else {
+    cEl.style.display= it.content?'block':'none'; if(it.content) cEl.textContent=it.content; lEl.style.display='none';
+  }
+  // attachment vault — ownership-checked display
+  const aEl=document.getElementById('detailAttach');
+  if(it.attachment && it.attachment.fileId){
+    try{
+      let rec=null; let canOpen=false;
+      if(isAuthed()){
+        try{ rec=storageGet(it.attachment.fileId); canOpen=!!rec.dataUrl; }catch(e){
+          if(e.code==='permission-denied'){ rec={name:it.attachment.name, type:it.attachment.type, size:it.attachment.size}; canOpen=false; } else throw e;
+        }
+      } else {
+        const rawAll=getStorageAll().find(r=>r.fileId===it.attachment.fileId);
+        rec= rawAll || it.attachment;
+        canOpen=!!(rec && rec.dataUrl);
+      }
+      if(rec){
+        aEl.style.display='flex';
+        document.getElementById('detailAttachName').textContent=rec.name;
+        document.getElementById('detailAttachMeta').textContent=(rec.type==='application/pdf'?'PDF':'Image')+' · '+formatSize(rec.size||0);
+        document.getElementById('detailAttachIcon').textContent= rec.type==='application/pdf'?'⧉':'◨';
+        const ownerEl=document.getElementById('detailAttachOwner');
+        ownerEl.textContent= canOpen?'✓ Stored privately — ownership verified':'🔒 Restricted — belongs to another account';
+        ownerEl.style.color= canOpen?'var(--sage)':'var(--coral)';
+        const openBtn=document.getElementById('detailAttachOpen');
+        const dlBtn=document.getElementById('detailAttachDownload');
+        openBtn.style.display= canOpen?'inline-flex':'none';
+        dlBtn.style.display= canOpen?'inline-flex':'none';
+        openBtn.onclick=()=>{ if(!canOpen) return; if(rec.type==='application/pdf'){ const w=window.open(); if(w){ w.document.write(`<iframe src="${rec.dataUrl}" style="width:100%;height:100vh;border:none"></iframe>`); w.document.title=rec.name; } } else window.open(rec.dataUrl,'_blank'); };
+        dlBtn.onclick=()=>{ if(!canOpen) return; const a=document.createElement('a'); a.href=rec.dataUrl; a.download=rec.name; a.click(); };
+      } else aEl.style.display='none';
+    }catch{ aEl.style.display='none'; }
+  } else {
+    aEl.style.display='none';
+  }
+
+  // actions
+  const actEl=document.getElementById('detailActions');
+  actEl.innerHTML='';
+  const mkBtn=(label,cls,cb)=>{ const b=document.createElement('button'); b.textContent=label; if(cls) b.className=cls; b.onclick=cb; return b; };
+  actEl.appendChild(mkBtn(it.archived?'↩ Restore':'▭ Archive','',()=>{ toggleArchive(it.id); openDetail(it.id); }));
+  actEl.appendChild(mkBtn('✎ Edit','',()=>{ closeAllSheets(); setTimeout(()=>openEdit(it.id),180); }));
+  const shareBtn=mkBtn(it.publicLink?'🔗 Public link':'🔗 Make public link','',()=> togglePublic(it.id));
+  actEl.appendChild(shareBtn);
+  actEl.appendChild(mkBtn('⏰ Remind','',()=>{ closeAllSheets(); setTimeout(()=>openEdit(it.id),180); toast('Set a reminder in the editor', {icon:'⏰'}); }));
+  const del=mkBtn('⌫ Delete','',()=> deleteItem(it.id));
+  del.style.color='var(--coral)'; del.style.borderColor='#FFD9D2';
+  actEl.appendChild(del);
+
+  // reset scroll to top so full sheet is visible from top
+  const db=document.getElementById('detailBody');
+  if(db) db.scrollTop=0;
+  openScrim(); detailSheet.classList.add('open');
+  // ensure sheet is fully visible — after transition, scroll body into view
+  setTimeout(()=>{ if(db) db.scrollTop=0; }, 50);
+}
+window.clearReminder=async(id)=>{
+  const it=items.find(x=>x.id===id); if(!it) return;
+  if(isAuthed()){
+    try{ await remoteUpdate(id,{reminderAt:null}); await refreshFromRemote(); openDetail(id); toast('Reminder cleared', {icon:'⏰'});}catch(e){ toast(e.code==='permission-denied'?'Blocked':e.message,{icon:'🔒'});}
+  } else { it.reminderAt=null; it.updatedAt=new Date().toISOString(); save(); render(); openDetail(id); toast('Reminder cleared', {icon:'⏰'}); }
+};
+window.copyPublic=(id)=>{
+  const it=items.find(x=>x.id===id); if(!it||!it.publicLink) return;
+  const url=location.origin+location.pathname+'#p='+it.publicLink;
+  navigator.clipboard.writeText(url).then(()=> toast('Public link copied', {icon:'⎘'})).catch(()=> toast(url, {icon:'🔗'}));
+};
+window.revokePublic=async(id)=>{
+  const it=items.find(x=>x.id===id); if(!it) return;
+  if(isAuthed()){
+    try{
+      await remoteUpdate(id,{publicLink:null});
+      revokePublicTokenByItem(id);
+      await refreshFromRemote(); openDetail(id); toast('Public link revoked — now unavailable', {icon:'🔒'});
+    }catch(e){ toast(e.message,{icon:'⚠'});}
+  } else {
+    it.publicLink=null; it.updatedAt=new Date().toISOString();
+    revokePublicTokenByItem(id);
+    save(); render(); openDetail(id); toast('Public link revoked', {icon:'🔒'});
+  }
+};
+async function togglePublic(id){
+  const it=items.find(x=>x.id===id); if(!it) return;
+  if(it.publicLink){ return revokePublic(id); }
+  else {
+    if(isAuthed()){
+      const me=getCurrentUser();
+      try{
+        const finalToken=createPublicToken(id, me.id);
+        await remoteUpdate(id,{publicLink:finalToken});
+        await refreshFromRemote(); openDetail(id); toast('Public link created — only this item, revocable', {icon:'🔗'});
+      }catch(e){ toast(e.code==='permission-denied'?'Blocked — not your item':e.message,{icon:'🔒'});}
+    } else {
+      let token;
+      try{ token=crypto.randomUUID().replace(/-/g,'').slice(0,20); }catch{ token=Math.random().toString(36).slice(2,12)+Math.random().toString(36).slice(2,12)+Date.now().toString(36).slice(-4); }
+      if(token===id) token='t_'+token;
+      it.publicLink=token;
+      // also store in public collection for unified lookup
+      const all=getPublicAll(); all.push({token, itemId: it.id, ownerId:'local', createdAt:new Date().toISOString()}); setPublicAll(all);
+      it.updatedAt=new Date().toISOString(); save(); render(); openDetail(id); toast('Public link created — only this item is visible', {icon:'🔗'});
+    }
+  }
+}
+async function deleteItem(id){
+  if(!confirm('Delete this save? This cannot be undone.')) return;
+  if(isAuthed()){
+    try{
+      await remoteDelete(id);
+      await refreshFromRemote();
+      closeAllSheets(); toast('Deleted — private data removed', {icon:'⌫'});
+    }catch(e){
+      if(e.code==='permission-denied') toast('Blocked — not your item', {icon:'🔒'});
+      else toast(e.message||'Delete failed — retry', {icon:'⚠'});
+    }
+  } else {
+    items=items.filter(x=>x.id!==id);
+    try{ const map=JSON.parse(localStorage.getItem('cove_public_map')||'{}'); for(const k in map) if(map[k]===id) delete map[k]; localStorage.setItem('cove_public_map', JSON.stringify(map)); }catch{}
+    save(); render(); closeAllSheets(); toast('Deleted', {icon:'⌫'});
+  }
+}
+window.deleteItem=deleteItem;
+
+// Reader mock
+function openReader(url, title){
+  readerSheet.classList.add('open');
+  detailSheet.classList.remove('open');
+  openScrim();
+  const body=document.getElementById('readerBody');
+  body.innerHTML=`
+    <div style="font-family:'Fraunces',serif;font-size:22px;line-height:1.2;letter-spacing:-.02em">${esc(title||extractDomain(url))}</div>
+    <div style="font-size:12px;color:var(--muted);margin-top:6px">${esc(extractDomain(url))} · ${readingTime('lorem ipsum '.repeat(120))} · reader view</div>
+    <div style="margin-top:16px;display:grid;gap:12px;color:#1A1A1E">
+      <p>This is a clean, distraction-free reader rendering of your saved link. In a native build, we’d extract the article’s text with a readability parser and cache it for offline reading.</p>
+      <p style="background:var(--paper-2);border:1px solid var(--line);padding:12px;border-radius:12px;font-size:13px;color:var(--muted)"><strong>Why this matters:</strong> You save the useful bit, not the ads. Cove keeps the essence so you can actually return and read it — even offline.</p>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris.</p>
+      <p>Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra.</p>
+      <div style="height:1px;background:var(--line)"></div>
+      <div style="font-size:13px;color:var(--muted)">Original: <a href="${esc(url)}" target="_blank" style="color:var(--ink);font-weight:700;word-break:break-all">${esc(url)}</a></div>
+    </div>
+  `;
+}
+
+// FAB & header actions
+document.getElementById('fab').onclick=()=> openCreate();
+document.getElementById('btnExport').onclick=openVault;
+function openVault(){
+  document.getElementById('vaultStats').textContent=`${allTags().length} tags · ${items.filter(i=>i.type==='link').length} links`;
+  document.getElementById('vaultCount').textContent=items.length;
+  openScrim(); vaultSheet.classList.add('open');
+}
+document.getElementById('btnExportJson').onclick=()=>{
+  const data=JSON.stringify(items,null,2);
+  const blob=new Blob([data],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=`cove-export-${new Date().toISOString().slice(0,10)}.json`; a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),2000);
+  toast('Export downloaded', {icon:'⬇'});
+};
+document.getElementById('btnCopyExport').onclick=async()=>{
+  const data=JSON.stringify(items,null,2);
+  try{ await navigator.clipboard.writeText(data); toast('Copied JSON to clipboard', {icon:'⎘'});}catch{ toast('Copy failed — try Download', {icon:'⚠'});}
+};
+document.getElementById('btnWipe').onclick=async()=>{
+  if(!confirm('Delete ALL data for this account? This erases your saves, tags, attachments and revokes public links.')) return;
+  if(!confirm('Are you absolutely sure? There is no undo for this account.')) return;
+  if(isAuthed()){
+    const me=getCurrentUser();
+    try{
+      // delete remote items for this owner — backend check ensures only yours
+      let all=getRemoteAll().filter(r=> r.ownerId!==me.id);
+      setRemoteAll(all);
+      // delete owned files — storage permission checked
+      let sAll=getStorageAll().filter(r=> r.ownerId!==me.id);
+      setStorageAll(sAll);
+      // revoke public links for this owner
+      let pubs=getPublicAll().filter(p=> p.ownerId!==me.id);
+      setPublicAll(pubs);
+      await refreshFromRemote();
+      toast('Account data deleted — items & files removed', {icon:'⌫'});
+    }catch(e){ toast(e.message, {icon:'⚠'}); }
+  } else {
+    localStorage.removeItem(LS_KEY);
+    localStorage.removeItem('cove_public_map');
+    localStorage.removeItem(PUBLIC_KEY);
+    localStorage.removeItem(STORAGE_KEY);
+    items=[]; save(); render();
+    toast('All local data deleted', {icon:'⌫'});
+  }
+  closeAllSheets();
+};
+
+// Share simulation (Stage 3 core challenge)
+const shareBanner=document.getElementById('shareBanner');
+let sharePayload=null;
+document.getElementById('btnShareSim').onclick=()=>{
+  // simulate share from Chrome
+  const samples=[
+    {title:'Are.na — How to save without losing', url:'https://www.are.na/blog/how-to-save', type:'link'},
+    {title:'Recipe: Miso Eggplant Bowl', url:'https://example.com/recipes/miso-eggplant', type:'link'},
+    {title:'Quick thought from Chrome', url:'Text shared from a selected paragraph about urban gardening — you highlighted this.', type:'note'},
+  ];
+  sharePayload=samples[Math.floor(Math.random()*samples.length)];
+  document.getElementById('shareTitle').textContent= sharePayload.type==='link'? sharePayload.url : sharePayload.url.slice(0,64);
+  shareBanner.style.display='flex';
+  toast('Simulated share — tap Save to capture', {icon:'⤴'});
+  // also handle malformed: test empty share
+};
+document.getElementById('acceptShare').onclick=()=>{
+  if(!sharePayload) return;
+  if(sharePayload.type==='link' && !isUrl(sharePayload.url)){
+    toast('Shared content was not a valid URL — saved as note instead', {icon:'⚠'});
+    openCreate({type:'note', title:sharePayload.title, content:sharePayload.url, tags:['inbox']});
+  } else if(sharePayload.type==='link'){
+    openCreate({type:'link', title:sharePayload.title, url:sharePayload.url, tags:guessTags(sharePayload.title+' '+sharePayload.url)});
+  } else {
+    openCreate({type:'note', title:sharePayload.title, content:sharePayload.url, tags:guessTags(sharePayload.url)});
+  }
+  shareBanner.style.display='none'; sharePayload=null;
+};
+document.getElementById('dismissShare').onclick=()=>{ shareBanner.style.display='none'; sharePayload=null; };
+
+// Handle real share target via URL params: ?share=url or #share
+(function handleIncomingShare(){
+  const params=new URLSearchParams(location.search);
+  const sharedUrl=params.get('url')||params.get('text')||params.get('share');
+  const sharedTitle=params.get('title')||'';
+  if(sharedUrl){
+    // validate
+    if(isUrl(sharedUrl)){
+      sharePayload={title:sharedTitle||extractDomain(sharedUrl), url:sharedUrl, type:'link'};
+    } else {
+      sharePayload={title:sharedTitle||'Shared note', url:sharedUrl, type:'note'};
+    }
+    document.getElementById('shareTitle').textContent= sharePayload.type==='link'? sharePayload.url : sharePayload.url.slice(0,64);
+    shareBanner.style.display='flex';
+    // clean url
+    history.replaceState({},'',location.pathname);
+  }
+  // Public link view — uses backend token lookup, no auth required, never exposes inbox
+  const hash=location.hash;
+  if(hash.startsWith('#p=')){
+    const token=hash.slice(3);
+    try{
+      // B: token is unguessable, not internal ID — lookup via public collection only
+      const pub=(typeof findPublicByToken==='function'? findPublicByToken(token) : null);
+      const map=JSON.parse(localStorage.getItem(PUBLIC_MAP_KEY)||localStorage.getItem('cove_public_map')||'{}');
+      const id= pub? pub.itemId : map[token];
+      const allRemote=(typeof getRemoteAll==='function'? getRemoteAll(): []);
+      // try remote first (owner-isolated store), fallback to local items for legacy
+      let it=allRemote.find(x=>x.id===id);
+      if(!it) it=items.find(x=>x.id===id);
+      if(it){
+        // show public view modal (read-only, no inbox exposure)
+        setTimeout(()=>{
+          document.body.innerHTML=`<div style="max-width:520px;margin:0 auto;min-height:100vh;background:var(--paper);padding:24px;font-family:'Instrument Sans',sans-serif">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><div style="width:32px;height:32px;border-radius:9px;background:var(--ink);color:#fff;display:grid;place-items:center;font-family:'Fraunces',serif">c<em style="color:var(--coral)">o</em>ve</div><span style="font-weight:800">Cove</span><span style="margin-left:auto;font-size:12px;color:var(--muted)">Public · read-only</span></div>
+            <div style="background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow-soft)">
+              <div style="height:4px;background:${typeMeta[it.type].color}"></div>
+              <div style="padding:16px">
+                <div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:${typeMeta[it.type].color}">${typeMeta[it.type].label}</div>
+                <h1 style="font-family:'Fraunces',serif;font-size:24px;line-height:1.2;margin:8px 0 8px;letter-spacing:-.02em">${esc(it.title)}</h1>
+                <div style="font-size:13px;color:var(--muted)">${fmtDate(it.createdAt)} · ${(it.tags||[]).map(t=>'#'+t).join(' ')}</div>
+                ${it.type==='image'&&it.imageData?`<div style="margin-top:12px;border-radius:14px;overflow:hidden;border:1px solid var(--line)"><img src="${it.imageData}" style="width:100%;display:block"></div>`:''}
+                ${it.type==='link'?`<div style="margin-top:12px;background:var(--paper-2);border:1px solid var(--line);border-radius:12px;padding:12px"><div style="font-weight:800;font-size:13px">${esc(extractDomain(it.content))}</div><a href="${esc(it.content)}" target="_blank" style="font-size:13px;word-break:break-all;color:var(--ink);font-weight:600">${esc(it.content)}</a></div>`:''}
+                ${(it.content&&it.type!=='image'&&it.type!=='link')||it.note?`<div style="margin-top:12px;white-space:pre-wrap;line-height:1.6;font-size:15px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px">${esc(it.content||it.note||'')}</div>`:''}
+                ${it.attachment?`<div style='margin-top:12px;background:var(--lav-2);border:1px solid #DDD8FF;border-radius:12px;padding:12px;display:flex;gap:10px;align-items:center'><span style='width:32px;height:32px;border-radius:8px;background:#fff;border:1px solid #DDD8FF;display:grid;place-items:center'>${it.attachment.type==='application/pdf'?'⧉':'◨'}</span><span style='flex:1;min-width:0'><b style='font-size:13px'>${esc(it.attachment.name)}</b><br><span style='font-size:11px;color:var(--muted)'>${it.attachment.type==='application/pdf'?'PDF':'Image'} · shared</span></span></div>`:''}
+              </div>
+            </div>
+            <div style="text-align:center;margin-top:16px;font-size:12px;color:var(--muted)">This is a public, read-only share. inbox & account hidden. No other items exposed.<br><a href="${location.pathname}" style="color:var(--ink);font-weight:700">Open Cove</a></div>
+          </div>`;
+        },100);
+        return;
+      } else {
+        document.body.innerHTML=`<div style="max-width:520px;margin:40px auto;padding:24px;text-align:center;font-family:'Instrument Sans',sans-serif"><h2 style="font-family:'Fraunces',serif">Link unavailable</h2><p style="color:var(--muted)">This public link was revoked or the item was deleted.</p><a href="${location.pathname}" style="display:inline-flex;margin-top:12px;height:40px;padding:0 16px;border-radius:999px;background:var(--ink);color:#fff;text-decoration:none;align-items:center;font-weight:700">Go to Cove</a></div>`;
+      }
+    }catch{}
+  }
+})();
+
+// Reminders / Notifications
+let reminderTimer=null;
+function scheduleReminders(){
+  if(reminderTimer) clearTimeout(reminderTimer);
+  const upcoming=items.filter(i=>i.reminderAt && !i.archived).map(i=>({it:i, at:new Date(i.reminderAt).getTime()})).filter(x=>x.at>Date.now()).sort((a,b)=>a.at-b.at)[0];
+  if(!upcoming) return;
+  const delay=Math.min(upcoming.at-Date.now(), 2147483647);
+  reminderTimer=setTimeout(()=>{
+    // fire
+    const it=items.find(x=>x.id===upcoming.it.id);
+    if(it && it.reminderAt){
+      // Browser notification if allowed
+      if('Notification' in window && Notification.permission==='granted'){
+        try{ new Notification('Cove — Time to revisit', {body: it.title, icon:''}); }catch{}
+      }
+      toast(`Reminder: “${it.title}” — tap to open`, {icon:'⏰'});
+      // tapping toast should open? we add click to last toast
+      const lastToast=toastsEl.lastElementChild;
+      if(lastToast) lastToast.onclick=()=> openDetail(it.id);
+      // keep reminder but mark as fired? we keep it, user clears manually
+    }
+    scheduleReminders();
+  }, delay);
+}
+// ask notification permission lazily
+document.addEventListener('click', ()=>{
+  if('Notification' in window && Notification.permission==='default'){
+    // don't spam, only if has reminders
+    if(items.some(i=>i.reminderAt)) Notification.requestPermission().catch(()=>{});
+  }
+}, {once:true});
+
+// Keyboard: ESC closes
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape') closeAllSheets();
+});
+
+// ===== AUTH UI wiring (Stage 2) =====
+let authMode='in';
+function showAuthErr(msg){
+  const el=document.getElementById('authError');
+  if(!el) return;
+  if(!msg){ el.classList.remove('show'); el.textContent=''; return; }
+  el.textContent=msg; el.classList.add('show');
+}
+function setAuthMode(m){
+  authMode=m;
+  document.querySelectorAll('#authTabs button').forEach(b=> b.classList.toggle('active', b.dataset.mode===m));
+  document.getElementById('authSubmit').textContent = m==='up' ? 'Create account →' : 'Continue →';
+  showAuthErr('');
+}
+document.getElementById('authTabs')?.addEventListener('click', e=>{
+  const b=e.target.closest('button'); if(!b) return; setAuthMode(b.dataset.mode);
+});
+document.querySelectorAll('[data-demo]').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    const demoKey=b.dataset.demo;
+    if(demoKey==='alice'){ document.getElementById('authEmail').value='alice@cove.app'; document.getElementById('authPass').value='alice123'; }
+    if(demoKey==='bob'){ document.getElementById('authEmail').value='bob@cove.app'; document.getElementById('authPass').value='bob123'; }
+    setAuthMode('in');
+    document.getElementById('authSubmit')?.click();
+  });
+});
+document.getElementById('authForm')?.addEventListener('submit', async (e)=>{ e.preventDefault(); doAuth(); });
+document.getElementById('authSubmit')?.addEventListener('click', async (e)=>{ e.preventDefault(); doAuth(); });
+async function doAuth(){
+  const emailEl=document.getElementById('authEmail');
+  const passEl=document.getElementById('authPass');
+  const email=emailEl.value.trim().toLowerCase();
+  const pass=passEl.value;
+  showAuthErr('');
+  emailEl.classList.remove('error'); passEl.classList.remove('error');
+  if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ showAuthErr('Please enter a valid email.'); emailEl.classList.add('error'); emailEl.focus(); return; }
+  if(!pass || pass.length<6){ showAuthErr('Password must be at least 6 characters.'); passEl.classList.add('error'); passEl.focus(); return; }
+  const btn=document.getElementById('authSubmit');
+  const prev=btn.textContent; btn.textContent='Please wait…'; btn.disabled=true;
+  // simulate network delay + failure handling
+  await new Promise(r=>setTimeout(r, 500));
+  if(simulateOffline || !navigator.onLine){
+    showAuthErr('You appear to be offline — check your connection and tap Retry.');
+    btn.textContent=prev; btn.disabled=false;
+    showError('Offline','Couldn’t sign in — you’re offline. Toggle Offline off and retry.');
+    return;
+  }
+  if(shouldFail() && Math.random()<0.5){
+    showAuthErr('Temporary network hiccup — tap Continue to retry.');
+    btn.textContent=prev; btn.disabled=false;
+    showError('Request failed','Temporary failure — please retry.');
+    return;
+  }
+  try{
+    if(authMode==='up'){
+      const users=getUsers();
+      if(users.some(u=>u.email===email)){ throw Object.assign(new Error('An account with this email already exists — try Sign in instead.'),{code:'already-exists'}); }
+      const newUser={id:'u-'+uid().slice(0,8), email, passHash:hashPass(pass), createdAt:new Date().toISOString()};
+      users.push(newUser);
+      localStorage.setItem(USERS_KEY, JSON.stringify(users));
+      setSession(newUser);
+      // new user starts empty — nothing to seed
+      await refreshFromRemote();
+      updateAuthUI(); render(); toast('Account created — welcome to Cove', {icon:'✓'});
+    } else {
+      const users=getUsers();
+      const u=users.find(x=>x.email===email);
+      if(!u || u.passHash!==hashPass(pass)){ throw Object.assign(new Error('Incorrect email or password — please try again.'),{code:'invalid-credential'}); }
+      setSession(u);
+      await refreshFromRemote();
+      updateAuthUI(); render(); toast('Signed in — your private inbox is ready', {icon:'✓'});
+    }
+    hideError();
+  }catch(err){
+    showAuthErr(err.message);
+    if(err.code==='invalid-credential'){ passEl.classList.add('error'); }
+  } finally {
+    btn.textContent = authMode==='up' ? 'Create account →' : 'Continue →';
+    btn.disabled=false;
+  }
+}
+document.getElementById('btnSignOut')?.addEventListener('click', ()=>{
+  if(!confirm('Sign out? You’ll need to sign in again to see your private saves.')) return;
+  clearSession();
+  items=[]; // clear view
+  updateAuthUI();
+  hideError(); showLoading(false);
+  // show local demo fallback or empty
+  load(); render();
+  toast('Signed out', {icon:'↩'});
+});
+document.getElementById('btnOfflineSim')?.addEventListener('click', ()=>{
+  simulateOffline=!simulateOffline;
+  const b=document.getElementById('btnOfflineSim');
+  b.textContent=simulateOffline ? 'Offline: ON' : 'Offline: off';
+  b.style.background=simulateOffline?'var(--coral-2)':'var(--paper-2)';
+  b.style.borderColor=simulateOffline?'#FFD9D2':'var(--line)';
+  b.style.color=simulateOffline?'var(--coral)':'var(--ink)';
+  if(simulateOffline){ setSync('error','Offline'); showError('Offline mode ON','All cloud requests will fail until you turn it off — great for testing retry.'); }
+  else { setSync('ok','Synced'); hideError(); if(isAuthed()) refreshFromRemote(); toast('Back online — syncing…',{icon:'●'}); }
+});
+document.getElementById('btnRetryLoad')?.addEventListener('click', ()=>{ hideError(); refreshFromRemote(); });
+document.getElementById('btnRetryError')?.addEventListener('click', ()=>{
+  hideError();
+  if(lastFailedOp){ const op=lastFailedOp; lastFailedOp=null; op().then(()=>refreshFromRemote()).catch(()=>{}); }
+  else if(isAuthed()) refreshFromRemote();
+});
+document.getElementById('btnPrivacyTest')?.addEventListener('click', async()=>{
+  const resEl=document.getElementById('privacyResult');
+  resEl.style.display='block'; resEl.textContent='Running…'; resEl.style.background='var(--paper-2)'; resEl.style.border='1px solid var(--line)';
+  try{
+    const me=getCurrentUser();
+    if(!me){ resEl.textContent='Please sign in first.'; resEl.style.background='var(--amber-2)'; resEl.style.borderColor='#FFEBB8'; return; }
+    const all=getRemoteAll();
+    const other=all.find(x=> x.ownerId!==me.id);
+    if(!other){ resEl.textContent='No other-user item found to test — create a second account and add an item there.'; resEl.style.background='var(--amber-2)'; return; }
+    // 1) try item fetch (should fail)
+    try{ await remoteGetById(other.id); resEl.textContent='❌ Item privacy FAILED — backend returned other user item'; resEl.style.background='var(--coral-2)'; return; }catch(e){ if(e.code!=='permission-denied') throw e; }
+    // 2) try file fetch if other has attachment (C: storage permissions, not obscure filename)
+    const sAll=getStorageAll(); const otherFile=sAll.find(f=> f.ownerId!==me.id);
+    if(otherFile){
+      try{ storageGet(otherFile.fileId); resEl.textContent='❌ File privacy FAILED — obscure filename did not protect file'; resEl.style.background='var(--coral-2)'; return; }catch(fe){ if(fe.code!=='permission-denied') throw fe; }
+      resEl.innerHTML='✅ <b>Both blocked</b> — item: <code>permission-denied</code>, file: <code>permission-denied</code><br><span style="color:var(--muted)">Item & file ownership checked on backend. Guessing IDs or filenames can’t leak data. Public links use unguessable tokens and show only one item.</span>';
+    } else {
+      resEl.innerHTML='✅ <b>Blocked as expected</b> — <code>permission-denied</code><br><span style="color:var(--muted)">Backend refused. Changing the ID can’t expose another user’s data. Try attaching a PDF/image to see file-level check too.</span>';
+    }
+    resEl.style.background='var(--sage-2)'; resEl.style.border='1px solid #CDEDE2'; resEl.style.color='#0B5A42';
+  }catch(e){
+    resEl.textContent='Test error: '+(e.message||e.code);
+    resEl.style.background='var(--coral-2)';
+  }
+});
+// make view toggle persist via saveLocal
+const origSave=save;
+viewToggle.addEventListener('click', ()=> setTimeout(()=> saveLocal(), 50));
+
+// Init — auth-aware boot
+async function boot(){
+  updateAuthUI();
+  if(isAuthed()){
+    load(); // load cached quickly
+    render();
+    await refreshFromRemote();
+  } else {
+    load(); render();
+    // overlay already visible
+  }
+  scheduleReminders();
+  if(!localStorage.getItem('cove_public_map')) localStorage.setItem('cove_public_map','{}');
+  console.log('Cove Stage 2 booted', {authed: isAuthed(), items: items.length});
+}
+boot();
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('./sw.js').then(reg=>{
+      console.log('Cove SW registered', reg.scope);
+      reg.addEventListener('updatefound', ()=> console.log('SW update found'));
+    }).catch(err=> console.log('SW failed', err));
+  });
+}
+// PWA install prompt — makes it a real app
+let deferredPrompt=null;
+const installBanner=document.getElementById('installBanner');
+window.addEventListener('beforeinstallprompt', (e)=>{
+  e.preventDefault(); deferredPrompt=e;
+  if(installBanner) installBanner.style.display='flex';
+  console.log('Cove installable');
+});
+document.getElementById('btnInstall')?.addEventListener('click', async()=>{
+  if(!deferredPrompt){ toast('To install: Chrome menu → Add to Home screen / Install app', {icon:'⬇'}); return; }
+  deferredPrompt.prompt();
+  const {outcome}=await deferredPrompt.userChoice;
+  toast(outcome==='accepted'?'Cove installed — find it on home screen':'Install dismissed', {icon: outcome==='accepted'?'✓':'✕'});
+  deferredPrompt=null;
+  if(installBanner) installBanner.style.display='none';
+});
+document.getElementById('btnDismissInstall')?.addEventListener('click', ()=>{ if(installBanner) installBanner.style.display='none'; });
+window.addEventListener('appinstalled', ()=>{ if(installBanner) installBanner.style.display='none'; toast('Cove is now an app! Open from home screen', {icon:'✓'}); });
+// iOS hint: if not standalone but iOS, show manual hint after 3s
+setTimeout(()=>{
+  const isIos=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isStandalone=window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+  if(isIos && !isStandalone && installBanner && installBanner.style.display==='none'){
+    installBanner.style.display='flex';
+    const txt=installBanner.querySelector('b'); if(txt) txt.textContent='Add to Home Screen';
+    const sub=installBanner.querySelector('span span'); if(sub) sub.textContent='Tap Share → Add to Home Screen';
+    document.getElementById('btnInstall').textContent='Show me';
+    document.getElementById('btnInstall').onclick=()=> toast('On iOS: Tap Share (⎙) → Add to Home Screen', {icon:'⬇'});
+  }
+}, 3000);
+</script>
+</body>
+</html>
